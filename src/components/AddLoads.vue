@@ -29,23 +29,11 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="origin"
-                    type="text"
-                    placeholder="Origin"
-                    ref="autcompleteOrigin"
-                    required
-                  ></v-text-field>
+                  <AutoComplete v-model="newLoad.origin" />
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="destination"
-                    type="text"
-                    placeholder="Destination"
-                    ref="autcompleteDestination"
-                    required
-                  ></v-text-field>
+                  <AutoComplete v-model="newLoad.destination" />
                 </v-col>
               </v-row>
             </v-container>
@@ -61,13 +49,19 @@
 
 <script>
 /* global google */
+import AutoComplete from "../components/AutoComplete";
 
 export default {
+  components: {
+    AutoComplete,
+  },
   data() {
     return {
       dialog: false,
-      origin: null,
-      destination: null,
+      newLoad: {
+        origin: null,
+        destination: null,
+      },
     };
   },
   mounted() {
