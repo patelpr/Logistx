@@ -9,16 +9,14 @@
       v-bind:style="{ width: 100 - width - 5 + '%' }"
       style="float: right; min-height: 530px; margin-left: 20px; margin-top: 0"
     >
-      <li></li>
+      <li v-for="direction in directions">
+        <p v-html="direction.instruction"></p>
+      </li>
     </ol>
   </div>
 </template>
 
 <script>
- const H = window.H
-
-
-
 export default {
   name: "HereMap",
   data() {
@@ -57,29 +55,6 @@ export default {
     );
   },
   methods: {
-    geocode(query) {
-      return new Promise((resolve, reject) => {
-        this.geocoder.geocode(
-          { searchText: query },
-          (data) => {
-            if (data.Response.View[0].Result.length > 0) {
-              data = data.Response.View[0].Result.map((location) => {
-                return {
-                  lat: location.Location.DisplayPosition.Latitude,
-                  lng: location.Location.DisplayPosition.Longitude,
-                };
-              });
-              resolve(data);
-            } else {
-              reject({ message: "No data found" });
-            }
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-      });
-    },
     route(start, finish) {
       var params = {
         mode: "fastest;car",
@@ -119,6 +94,29 @@ export default {
           },
           (error) => {
             console.error(error);
+          }
+        );
+      });
+    },
+    geocode(query) {
+      return new Promise((resolve, reject) => {
+        this.geocoder.geocode(
+          { searchText: query },
+          (data) => {
+            if (data.Response.View[0].Result.length > 0) {
+              data = data.Response.View[0].Result.map((location) => {
+                return {
+                  lat: location.Location.DisplayPosition.Latitude,
+                  lng: location.Location.DisplayPosition.Longitude,
+                };
+              });
+              resolve(data);
+            } else {
+              reject({ message: "No data found" });
+            }
+          },
+          (error) => {
+            reject(error);
           }
         );
       });

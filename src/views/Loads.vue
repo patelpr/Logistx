@@ -46,8 +46,7 @@
       ref="map"
       appId="rhBFhiRCho4SLkdJh1Sr"
       appCode="WY6Fsbx49TNgC2xnpNi_Ahk_N4lt81INOkwaL5ayN5U"
-      lat="37.7397"
-      lng="-121.4252"
+      :center="center"
       width="100%"
       height="100%"
     />
@@ -68,6 +67,10 @@ export default {
       dialog: false,
       origin: "",
       destination: "",
+      center: {
+        lat: "",
+        lng: "",
+      },
     };
   },
   methods: {
@@ -89,7 +92,7 @@ export default {
 };
 </script>
 <style scoped>
-input{
+input {
   font-size: 1.6em;
 }
 </style>
