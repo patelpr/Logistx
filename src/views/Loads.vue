@@ -44,8 +44,8 @@
     </v-form>
     <HereMap
       ref="map"
-      appId="exniu9DfzeFxJRj681P2"
-      appCode="lR-J6kbXQXttp16dXgOreueVEkmw5bG0rHYtDVRimZE"
+      appId="rhBFhiRCho4SLkdJh1Sr"
+      appCode="WY6Fsbx49TNgC2xnpNi_Ahk_N4lt81INOkwaL5ayN5U"
       lat="37.7397"
       lng="-121.4252"
       width="100%"
