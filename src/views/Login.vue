@@ -1,9 +1,20 @@
 <template>
   <div class="text-xs-center">
     <v-overlay>
-      <v-btn dark fab @click="loginButtonPressed()"
-        ><v-icon>mdi-google</v-icon></v-btn
-      >
+      <v-card>
+        <v-card-media src="src" height="200px"> </v-card-media>
+        <v-card-title primary-title>
+          <div>
+            <h3 class="headline mb-0">Login!</h3>
+            <div>You must be logged in to proceed.</div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn dark fab @click="loginButtonPressed()"
+            ><v-icon>mdi-google</v-icon></v-btn
+          >
+        </v-card-actions>
+      </v-card>
     </v-overlay>
   </div>
 </template>
@@ -24,8 +35,8 @@ export default {
       );
       provider.addScope("https://www.googleapis.com/auth/userinfo.email");
       provider.addScope("https://www.googleapis.com/auth/userinfo.profile");
-   //  provider.setCustomParameters({
-    //    prompt: "select_account",
+      //  provider.setCustomParameters({
+      //    prompt: "select_account",
       //});
       firebase
         .auth()

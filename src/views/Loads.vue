@@ -21,34 +21,23 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="6">
-            <input
-              v-model="origin"
-              type="text"
-              placeholder="Origin"
-              ref="autcompleteOrigin"
-              required
-            />
+            <AutoComplete v-model="origin" />
           </v-col>
 
           <v-col cols="12" md="6">
-            <input
-              v-model="destination"
-              type="text"
-              placeholder="Destination"
-              ref="autcompleteDestination"
-              required
-            />
+            <AutoComplete v-model="destination" />
           </v-col>
         </v-row>
       </v-container>
     </v-form>
     <HereMap
       ref="map"
-      appId="rhBFhiRCho4SLkdJh1Sr"
-      appCode="WY6Fsbx49TNgC2xnpNi_Ahk_N4lt81INOkwaL5ayN5U"
-      :center="center"
-      width="100%"
-      height="100%"
+      appId="exniu9DfzeFxJRj681P2"
+      appCode="lR-J6kbXQXttp16dXgOreueVEkmw5bG0rHYtDVRimZE"
+      lat="37.7397"
+      lng="-121.4252"
+      width="60"
+      height="530px"
     />
   </v-container>
 </template>
@@ -56,11 +45,13 @@
 <script>
 import HereMap from "../components/HereMap";
 import AddLoads from "../components/AddLoads";
+import AutoComplete from "../components/AutoComplete";
 
 export default {
   components: {
     HereMap,
     AddLoads,
+    AutoComplete,
   },
   data() {
     return {
@@ -80,8 +71,8 @@ export default {
   },
   mounted() {
     for (let ref in this.$refs) {
-      let selref= this.$refs[ref]
-      console.log("ref " + selref]);
+      let selref = this.$refs[ref];
+      console.log("ref " + selref);
       const autocomplete = new google.maps.places.Autocomplete(this.$refs[ref]);
 
       autocomplete.addListener("place_changed", () => {
