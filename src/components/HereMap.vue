@@ -9,9 +9,6 @@
       v-bind:style="{ width: 100 - width - 5 + '%' }"
       style="float: right; min-height: 530px; margin-left: 20px; margin-top: 0"
     >
-      <li v-for="direction in directions">
-        <p v-html="direction.instruction"></p>
-      </li>
     </ol>
   </div>
 </template>
