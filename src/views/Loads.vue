@@ -80,11 +80,13 @@ export default {
   },
   mounted() {
     for (let ref in this.$refs) {
-      console.log(this.$refs[ref]);
+      let selref= this.$refs[ref]
+      console.log("ref " + selref]);
       const autocomplete = new google.maps.places.Autocomplete(this.$refs[ref]);
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
+
         console.log(place);
       });
     }
