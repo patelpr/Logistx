@@ -49,7 +49,7 @@
 
 <script>
 /* global google */
-import AutoComplete from "../components/AutoComplete";
+import AutoComplete from "./AutoComplete";
 
 export default {
   components: {
