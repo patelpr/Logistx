@@ -78,4 +78,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+input {
+  font-size: 1.6em;
+}
+</style>
