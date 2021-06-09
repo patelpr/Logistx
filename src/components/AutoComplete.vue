@@ -1,10 +1,9 @@
 <template>
               <input
+              id="origin"
               type="text"
-              ref="autocomplete"
               required
-              v-model="address"
-              
+              v-model="origin.address"
             />
 </template>
 
@@ -20,7 +19,7 @@ export default {
       const autocomplete = new google.maps.places.Autocomplete(this.$refs['autocomplete']);
 
       autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
+        const place = autocomplete.getPlace().geometry.location;
 
         console.log(place);
       });

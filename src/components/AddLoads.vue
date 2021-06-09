@@ -1,22 +1,10 @@
-/* global google */
-
 <template
   ><div>
-    <v-btn fab large right absolute @click="dialog = true">+</v-btn>
-
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      scrollable
-    >
-      <v-card tile>
-        <v-toolbar flat dark color="primary">
-          <v-btn icon dark @click="dialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Add a Load</v-toolbar-title>
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-toolbar dark color="primary">
+          <v-spacer></v-spacer>
+          <v-toolbar-title>Add Loads</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="submit()">
@@ -24,62 +12,175 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-text>
-          <v-form>
-            <v-container>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <AutoComplete v-model="newLoad.origin" />
-                </v-col>
+      </v-col>
+    </v-row>
 
-                <v-col cols="12" md="6">
-                  <AutoComplete v-model="newLoad.destination" />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-          <v-divider></v-divider>
-        </v-card-text>
+    <v-form v-model="valid" lazy-validation>
+      <v-row align="center" justify="center" no-gutters>
+        <v-col cols="12" md="4">
+          <input
+            id="origin"
+            type="text"
+            label="origin"
+            required
+            style="font-size:1.2em"
+            v-model="load.origin.address"
+          />
+        </v-col>
 
-        <div style="flex: 1 1 auto;"></div>
-      </v-card>
-    </v-dialog>
+        <v-col cols="12" md="4">
+          <v-menu
+            v-model="menu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="load.origin.date"
+                label="Picker without buttons"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="load.origin.date"
+              @input="menu = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col cols="12" md="4"> </v-col>
+      </v-row>
+      <v-row align="center" justify="center" no-gutters>
+        <v-col cols="12" md="4">
+          <input
+            id="destination"
+            type="text"
+            label="destination"
+            style="font-size:1.2em"
+            required
+            v-model="load.destination.address"
+          />
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-menu
+            v-model="menu1"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="load.origin.date"
+                label="Picker without buttons"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="load.destination.date"
+              @input="menu1 = false"
+            ></v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col cols="12" md="4"> </v-col>
+      </v-row>
+    </v-form>
   </div>
 </template>
 
 <script>
-/* global google */
-import AutoComplete from "./AutoComplete";
-
+import firebase from "firebase";
 export default {
-  components: {
-    AutoComplete,
-  },
   data() {
     return {
+      menu: false,
+      menu1: false,
+      valid: true,
       dialog: false,
-      newLoad: {
-        origin: null,
-        destination: null,
+      load: {
+        num: null,
+        driver: "",
+        rate: null,
+        type: null,
+        tracking: null,
+
+        contact: {
+          name: null,
+          email: null,
+          number: null,
+        },
+        origin: [
+          {
+            location: null,
+            address: null,
+            date: null,
+            time: null,
+            lumper: null,
+            detention: null,
+            layover: null,
+            ref: null,
+            notes: "",
+            bolnum: null,
+            sealnum: null,
+          },
+        ],
+        destination: [
+          {
+            location: null,
+            address: null,
+            date: null,
+            time: null,
+            lumper: null,
+            detention: null,
+            layover: null,
+            ref: null,
+            notes: "",
+            pod: null,
+          },
+        ],
       },
     };
   },
   mounted() {
-    for (let ref in this.$refs) {
-      console.log(this.$refs[ref]);
-      const autocomplete = new google.maps.places.Autocomplete(this.$refs[ref]);
+    const autocompleteorigin = new google.maps.places.Autocomplete(
+      document.getElementById("origin")
+    );
+    const autocompletedestination = new google.maps.places.Autocomplete(
+      document.getElementById("destination")
+    );
+    autocompleteorigin.addListener("place_changed", () => {
+      this.load.origin.location = autocompleteorigin.getPlace();
+      console.log(autocompleteorigin.getPlace());
+    });
+    autocompletedestination.addListener("place_changed", () => {
+      this.load.destination.location = autocompletedestinations.getPlace();
+      7;
+      console.log(autocompletedestinations.getPlace());
+    });
+  },
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        console.log(place);
-      });
-    }
+  methods: {
+    submit() {
+      firebase
+        .firestore()
+        .collection("Users")
+        .doc(firebase.auth().currentUser)
+        .collection("Loads")
+        .doc()
+        .add(this.load);
+    },
   },
 };
 </script>
 
-<style>
-input {
-  font-size: 1.6em;
-}
-</style>
+<style></style>

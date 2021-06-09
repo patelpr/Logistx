@@ -1,7 +1,0 @@
-Carrier (auth)
--mc
--dot
--name
--CONTACT
--EQUIPMENT
--DRIVERS
