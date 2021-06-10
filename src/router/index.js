@@ -21,7 +21,7 @@ let router = new Router({
     },
     {
       path: "/addloads",
-      name: "addloads",
+      name: "Add Loads",
       component: AddLoads,
       meta: {
         requiresAuth: true,
@@ -29,12 +29,12 @@ let router = new Router({
     }, 
     {
       path: "/login",
-      name: "login",
+      name: "Login",
       component: Login,
     },
     {
       path: "/drivers",
-      name: "drivers",
+      name: "Drivers",
       component: Drivers,
       meta: {
         requiresAuth: true,
@@ -42,7 +42,7 @@ let router = new Router({
     },
     {
       path: "/equipment",
-      name: "equipment",
+      name: "Equipment",
       component: Equipment,
       meta: {
         requiresAuth: true,

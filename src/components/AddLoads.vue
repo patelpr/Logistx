@@ -1,96 +1,23 @@
 <template
   ><div>
-    <v-row justify="center">
-      <v-col cols="12">
-        <v-toolbar dark color="primary">
-          <v-spacer></v-spacer>
-          <v-toolbar-title>Add Loads</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn dark text @click="submit()">
-              Submit
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-      </v-col>
-    </v-row>
-
-    <v-form v-model="valid" lazy-validation>
-      <v-row align="center" justify="center" no-gutters>
+    <v-form>
+      <v-row align="center" justify="center" no-gutters pa-2>
         <v-col cols="12" md="4">
-          <input
-            id="origin"
-            type="text"
-            label="origin"
-            required
-            style="font-size:1.2em"
-            v-model="load.origin.address"
-          />
+          <Autocomplete @changed="setOrigin()" />
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-menu
-            v-model="menu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="load.origin.date"
-                label="Picker without buttons"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="load.origin.date"
-              @input="menu = false"
-            ></v-date-picker>
-          </v-menu>
+          <Date @setdate="setPUDate()" />
         </v-col>
         <v-col cols="12" md="4"> </v-col>
       </v-row>
       <v-row align="center" justify="center" no-gutters>
         <v-col cols="12" md="4">
-          <input
-            id="destination"
-            type="text"
-            label="destination"
-            style="font-size:1.2em"
-            required
-            v-model="load.destination.address"
-          />
+          <Autocomplete @changed="setDestination()" />
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-menu
-            v-model="menu1"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="load.origin.date"
-                label="Picker without buttons"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="load.destination.date"
-              @input="menu1 = false"
-            ></v-date-picker>
-          </v-menu>
+          <Date @setdate="setDelDate()" />
         </v-col>
         <v-col cols="12" md="4"> </v-col>
       </v-row>
@@ -99,18 +26,18 @@
 </template>
 
 <script>
+import Date from "./Date.vue";
+import Autocomplete from "./AutoComplete.vue";
 import firebase from "firebase";
 export default {
   data() {
     return {
-      menu: false,
-      menu1: false,
       valid: true,
-      dialog: false,
       load: {
         num: null,
         driver: "",
         rate: null,
+        ratecon: null,
         type: null,
         tracking: null,
 
@@ -152,24 +79,59 @@ export default {
     };
   },
   mounted() {
-    const autocompleteorigin = new google.maps.places.Autocomplete(
-      document.getElementById("origin")
-    );
-    const autocompletedestination = new google.maps.places.Autocomplete(
-      document.getElementById("destination")
-    );
-    autocompleteorigin.addListener("place_changed", () => {
-      this.load.origin.location = autocompleteorigin.getPlace();
-      console.log(autocompleteorigin.getPlace());
-    });
-    autocompletedestination.addListener("place_changed", () => {
-      this.load.destination.location = autocompletedestinations.getPlace();
-      7;
-      console.log(autocompletedestinations.getPlace());
-    });
+    // const autocompleteorigin = new google.maps.places.Autocomplete(
+    //   document.getElementById("origin"),
+    //   {
+    //     componentRestrictions: { country: ["us"] },
+    //     fields: ["address_components", "geometry"],
+    //     types: ["address"],
+    //   }
+    // );
+    // const autocompletedestination = new google.maps.places.Autocomplete(
+    //   document.getElementById("destination"),
+    //   {
+    //     componentRestrictions: { country: ["us", "ca"] },
+    //     fields: ["address_components", "geometry"],
+    //     types: ["address"],
+    //   }
+    // );
+    // autocompleteorigin.addListener("place_changed", () => {
+    //   this.load.origin.location = autocompleteorigin.getPlace();
+    //   console.log(autocompleteorigin.getPlace());
+    // });
+    // autocompletedestination.addListener("place_changed", () => {
+    //   this.load.destination.location = autocompletedestinations.getPlace();
+    //   7;
+    //   console.log(autocompletedestinations.getPlace());
+    // });
+  },
+  components: {
+    Autocomplete,
+    Date,
   },
 
+  created: function() {
+    this.$on("some-event", () => {
+      console.log("WOW! custom event is triggered");
+    });
+  },
   methods: {
+    setPUDate: function(e) {
+      this.load.origin.date = e;
+      console.log(this.load.origin.date);
+    },
+    setDelDate: function(e) {
+      this.load.destination.date = e;
+    },
+
+    setOrigin: function(e) {
+      this.load.origin.location = e;
+      console.log(this.load.origin.location);
+    },
+    setDestination: function(e) {
+      this.load.destination.location = e;
+      console.log(this.load.destination.location);
+    },
     submit() {
       firebase
         .firestore()
