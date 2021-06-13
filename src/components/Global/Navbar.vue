@@ -3,6 +3,8 @@
       color="grey lighten-3"
       expand-on-hover
       app
+      permanent
+      clipped
       left
     >
       <v-list nav>

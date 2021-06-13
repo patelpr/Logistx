@@ -17,7 +17,7 @@
         v-on="on"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="date" @input="setDate"></v-date-picker>
+    <v-date-picker v-model="date" @input="setDate($event)"></v-date-picker>
   </v-menu>
 </template>
 
@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     setDate(e) {
-      this.$emit("setdate", this.date);
+      this.$emit("setdate", e);
       this.menu = false;
     },
   },

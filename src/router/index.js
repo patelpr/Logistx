@@ -4,7 +4,8 @@ import Login from "@/views/Login";
 import Loads from "@/views/Loads";
 import Drivers from "@/views/Drivers";
 import Equipment from "@/views/Equipment";
-import AddLoads from '../components/AddLoads'
+import AddLoads from "../components/Loads/AddLoads";
+import Load from "../components/Loads/Load";
 
 import firebase from "firebase";
 Vue.use(Router);
@@ -26,7 +27,16 @@ let router = new Router({
       meta: {
         requiresAuth: true,
       },
-    }, 
+    },
+    {
+      path: "/load/:id",
+      name: " Load",
+      component: Load,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
     {
       path: "/login",
       name: "Login",
