@@ -5,6 +5,8 @@ import Loads from "@/views/Loads";
 import Drivers from "@/views/Drivers";
 import Equipment from "@/views/Equipment";
 import AddLoads from "../components/Loads/AddLoads";
+import DriverApp from "..//components/Drivers/DriverApp.vue";
+
 import Load from "../components/Loads/Load";
 
 import firebase from "firebase";
@@ -24,6 +26,14 @@ let router = new Router({
       path: "/addloads",
       name: "Add Loads",
       component: AddLoads,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/application",
+      name: "Application",
+      component: DriverApp,
       meta: {
         requiresAuth: true,
       },

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-card v-if="load.location.formatted_address">
+    <v-card>
       <v-card-title> {{ title }} Information </v-card-title>
       <v-card-subtitle v-if="load.time">
-        {{ title + " time:     " + load.time }}
+        {{ title + " time: " + load.time }}
       </v-card-subtitle>
       <v-card-text>
         {{ load.location.formatted_address }}
@@ -18,7 +18,7 @@
         >
       </v-card-text>
     </v-card>
-    <v-card v-else>
+    <v-card v-if="!load.location.formatted_address">
       <h3 class="pa-3">NO {{ title.toUpperCase() }} SELECTED</h3>
     </v-card>
   </div>

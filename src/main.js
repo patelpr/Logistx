@@ -3,6 +3,8 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
 import firebase from 'firebase'
+import { VueMaskDirective } from "v-mask";
+Vue.directive("mask", VueMaskDirective);
 
 Vue.config.productionTip = false
 var firebaseConfig = {

@@ -192,8 +192,7 @@
               <v-text-field
                 name="contact_number"
                 label="Contact Number"
-                type="number"
-                :rules="phoneRules"
+                v-mask="'(###) ###-####'"
                 v-model="load.contact.number"
                 placeholder="Number"
                 single-line
@@ -213,7 +212,7 @@
                 single-line
               >
                 <v-icon slot="append">
-                  mdi-email
+                  mdi-at
                 </v-icon></v-text-field
               >
             </v-col>
@@ -257,7 +256,7 @@
 <script>
 import Address from "../Global/Address.vue";
 import axios from "axios";
-import VueGoogleAutocomplete from "vue-google-autocomplete";
+import VueGoogleAutocomplete from "vue-google-autocomplete";  
 import firebase from "firebase";
 export default {
   data() {
@@ -438,7 +437,7 @@ export default {
         console.log(error);
       } finally {
         this.clear();
-        // this.$router.push("/loads");
+        this.$router.push("/loads");
       }
     },
   },
