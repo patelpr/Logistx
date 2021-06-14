@@ -195,81 +195,36 @@
 
         <v-stepper-content step="3">
           <v-card class="mb-12 pa-12">
-            <!-- <v-row>
-              <v-row>
-                <v-text-field
-                  name="company"
-                  v-model="driver.work.history.company"
-                  label="Company"
-                  single-line
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  name="start"
-                  v-model="driver.work.history.start"
-                  v-mask="'##/##/####'"
-                  label="Start"
-                  single-line
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  name="finish"
-                  v-model="driver.work.history.finish"
-                  label="Finish"
-                  v-mask="'##/##/####'"
-                  single-line
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  name="reason"
-                  v-model="driver.work.history.reason"
-                  label="Reason for leaving"
-                  single-line
-                ></v-text-field> </v-row
-            ></v-row> -->
             <v-divider></v-divider>
-            <div v-if="driver.work.history[1]">
-              <v-row v-for="(h, i) in driver.work.history" :key="i">
-                <v-row>
-                  <v-text-field
-                    name="company"
-                    :v-model="driver.work.history[i].company"
-                    label="Company"
-                    single-line
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    name="start"
-                    v-model="driver.work.history[i].start"
-                    v-mask="'##/##/####'"
-                    label="Start"
-                    single-line
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    name="finish"
-                    v-model="driver.work.history[i].finish"
-                    label="Finish"
-                    v-mask="'##/##/####'"
-                    single-line
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    name="reason"
-                    v-model="driver.work.history[i].reason"
-                    label="Reason for leaving"
-                    single-line
-                  ></v-text-field>
-                </v-row>
-                <v-divider></v-divider>
-              </v-row>
-            </div>
+            <v-row v-for="(h, i) in driver.work.history" :key="i">
+              <v-text-field
+                name="company"
+                :v-model="driver.work.history[i].company"
+                label="Company"
+                single-line
+              ></v-text-field>
+              <v-text-field
+                name="start"
+                v-model="driver.work.history[i].start"
+                v-mask="'##/##/####'"
+                label="Start"
+                single-line
+              ></v-text-field>
+              <v-text-field
+                name="finish"
+                v-model="driver.work.history[i].finish"
+                label="Finish"
+                v-mask="'##/##/####'"
+                single-line
+              ></v-text-field>
+              <v-text-field
+                name="reason"
+                v-model="driver.work.history[i].reason"
+                label="Reason for leaving"
+                single-line
+              ></v-text-field>
+              <v-divider></v-divider>
+            </v-row>
 
             <v-row class="mb-12 pa-12"
               ><v-btn @click="addEmployment">Add Employment </v-btn></v-row
