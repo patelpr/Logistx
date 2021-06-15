@@ -31,6 +31,7 @@
                   placeholder="First Name"
                   :rules="form.nameRules"
                   single-line
+                  required
                   ><v-icon slot="prepend">
                     mdi-account
                   </v-icon></v-text-field
@@ -44,6 +45,7 @@
                   placeholder="Last Name"
                   :rules="form.nameRules"
                   single-line
+                  required
                   ><v-icon slot="prepend">
                     mdi-account
                   </v-icon></v-text-field
@@ -54,8 +56,9 @@
                   label="Date of Birth"
                   name="dob"
                   v-mask="'##/##/####'"
-                  messages="mm/dd/yyyy format"
+                  messages="mm/dd/yyyy"
                   v-model="driver.dob"
+                  required
                 >
                   <v-icon slot="prepend">
                     mdi-cake
@@ -72,6 +75,7 @@
                   placeholder="Email"
                   :rules="form.emailRules"
                   single-line
+                  required
                   ><v-icon slot="prepend">
                     mdi-at
                   </v-icon></v-text-field
@@ -85,6 +89,7 @@
                   placeholder="Phone Number"
                   v-mask="'(###) ###-####'"
                   single-line
+                  required
                 >
                   <v-icon slot="prepend">
                     mdi-phone
@@ -98,6 +103,7 @@
                   v-mask="'###-##-####'"
                   placeholder="Social Security Number"
                   single-line
+                  required
                 >
                   <v-icon slot="prepend">
                     mdi-card-account-details
@@ -106,13 +112,13 @@
               >
             </v-row>
             <v-row>
-              <v-col cols="1">
+              <v-col cols="12" md="1">
                 <v-icon>mdi-map-marker</v-icon>
               </v-col>
-              <v-col cols="11">
+              <v-col cols="12" md="11">
                 <vue-google-autocomplete
                   id="driveraddress"
-                  class="pa-4"
+                  class="pa-5"
                   style="border:1px solid gray;"
                   placeholder="Driver Address"
                   classname="search-location"
@@ -195,44 +201,68 @@
 
         <v-stepper-content step="3">
           <v-card class="mb-12 pa-12">
-            <v-divider></v-divider>
-            <v-row v-for="(h, i) in driver.work.history" :key="i">
-              <v-text-field
-                name="company"
-                :v-model="driver.work.history[i].company"
-                label="Company"
-                single-line
-              ></v-text-field>
-              <v-text-field
-                name="start"
-                v-model="driver.work.history[i].start"
-                v-mask="'##/##/####'"
-                label="Start"
-                single-line
-              ></v-text-field>
-              <v-text-field
-                name="finish"
-                v-model="driver.work.history[i].finish"
-                label="Finish"
-                v-mask="'##/##/####'"
-                single-line
-              ></v-text-field>
-              <v-text-field
-                name="reason"
-                v-model="driver.work.history[i].reason"
-                label="Reason for leaving"
-                single-line
-              ></v-text-field>
-              <v-divider></v-divider>
-            </v-row>
+            <v-card
+              v-for="(h, i) in driver.work.history"
+              :key="i"
+              class="pa-10 ma-5"
+            >
+              <v-row>
+                <v-text-field
+                  name="company"
+                  v-model="driver.work.history[i].company"
+                  label="Company"
+                  single-line
+                  ><v-icon slot="prepend">
+                    mdi-domain
+                  </v-icon></v-text-field
+                ></v-row
+              >
+              <v-row>
+                <v-text-field
+                  name="start"
+                  v-model="driver.work.history[i].start"
+                  v-mask="'##/##/####'"
+                  label="Start"
+                  messages="mm/dd/yyyy"
+                  single-line
+                  ><v-icon slot="prepend">
+                    mdi-calendar-range
+                  </v-icon></v-text-field
+                ></v-row
+              >
+              <v-row>
+                <v-text-field
+                  name="finish"
+                  v-model="driver.work.history[i].finish"
+                  label="Finish"
+                  v-mask="'##/##/####'"
+                  messages="mm/dd/yyyy"
+                  single-line
+                  ><v-icon slot="prepend">
+                    mdi-calendar-range
+                  </v-icon></v-text-field
+                ></v-row
+              >
+              <v-row>
+                <v-text-field
+                  name="reason"
+                  v-model="driver.work.history[i].reason"
+                  label="Reason for leaving"
+                  single-line
+                  ><v-icon slot="prepend">
+                    mdi-text-box
+                  </v-icon></v-text-field
+                >
+              </v-row>
+            </v-card>
 
             <v-row class="mb-12 pa-12"
               ><v-btn @click="addEmployment">Add Employment </v-btn></v-row
             >
           </v-card>
 
-          <v-btn color="primary" @click="submit()">
-            Continue
+          <v-btn color="primary" type="submit" @click="submit()">
+            Submit
           </v-btn>
 
           <v-btn text>
@@ -246,7 +276,7 @@
 
 <script>
 import VueGoogleAutocomplete from "vue-google-autocomplete";
-
+import firebase from "firebase";
 export default {
   data() {
     return {
@@ -316,13 +346,25 @@ export default {
         reason: null,
       };
       this.driver.work.history.push(add);
+      console.log(this.driver.work.history);
     },
     setPlace(e, p, i) {
       this.driver.address.format = p.formatted_address;
       this.driver.address.comp = e;
-      console.log(this.driver.address);
+      //   console.log(this.driver.address);
     },
-    submit() {},
+    submit() {
+      try {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("drivers")
+          .add(this.driver);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     clear() {
       this.$refs.form.reset();
     },

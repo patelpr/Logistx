@@ -1,12 +1,17 @@
-import Vue from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify'
-import router from './router'
-import firebase from 'firebase'
+import Vue from "vue";
+import App from "./App.vue";
+import vuetify from "./plugins/vuetify";
+import router from "./router";
+import firebase from "firebase";
 import { VueMaskDirective } from "v-mask";
+import * as Vue2Leaflet from "vue2-leaflet";
+import L from "leaflet";
+
+Vue.use(Vue2Leaflet);
+Vue.use(L);
 Vue.directive("mask", VueMaskDirective);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 var firebaseConfig = {
   apiKey: "AIzaSyA-QWdASbkugX3kJyi0lwDE8KfBb__O3dw",
   authDomain: "logistixapps.firebaseapp.com",
@@ -29,6 +34,8 @@ firebase.getCurrentUser = () => {
 };
 new Vue({
   vuetify,
+  Vue2Leaflet,
+  L,
   router,
-  render: h => h(App)
-}).$mount('#app')
+  render: (h) => h(App),
+}).$mount("#app");

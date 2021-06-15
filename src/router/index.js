@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Login from "@/views/Login";
+import Map from "@/views/Map";
 import Loads from "@/views/Loads";
 import Drivers from "@/views/Drivers";
 import Equipment from "@/views/Equipment";
@@ -18,6 +19,14 @@ let router = new Router({
       path: "/loads",
       name: "loads",
       component: Loads,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/map",
+      name: "map",
+      component: Map,
       meta: {
         requiresAuth: true,
       },
