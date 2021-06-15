@@ -1,83 +1,94 @@
 <template>
-  <div style="height: 200px; overflow: auto;">
-    <l-map></l-map>
-    <l-tile-layer></l-tile-layer>
-    <l-marker></l-marker>
-    <l-popup></l-popup>
-    <l-tooltip></l-tooltip>
+  <div>
+    <v-navigation-drawer absolute right>
+
+      <v-list nav dense>
+        <h1>Loads</h1>
+        <v-list-item
+          v-for="load in loads"
+          :key="load.id"
+          @click="
+            setLoads(
+              load.origin.location.latitude,
+              load.origin.location.longitude,
+              load.destination.location.latitude,
+              load.destination.location.longitude
+            )
+          "
+        >
+          <v-row>
+            <v-col cols="5">{{
+              load.origin.location.address_components.city +
+              ", " +
+              load.origin.location.address_components.state
+            }}</v-col>
+            <v-icon>mdi-menu-right</v-icon>
+            <v-col cols="5">{{
+              load.origin.location.address_components.city +
+              ", " +
+              load.destination.location.address_components.state
+            }}</v-col>
+          </v-row>
+          <v-divider></v-divider>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <Map :center="center" :origin="originCoord" :destination="destinationCoord" />
   </div>
 </template>
 
 <script>
-import "leaflet/dist/leaflet.css";
-
-import { latLng } from "leaflet";
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from "vue2-leaflet";
-
 import firebase from "firebase";
+import Map from "./Map.vue";
 export default {
-  data() {
-    return {
-      loads: [],
-      zoom: 13,
-      center: latLng(47.41322, -1.219482),
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      withPopup: latLng(47.41322, -1.219482),
-      withTooltip: latLng(47.41422, -1.250482),
-      currentZoom: 11.5,
-      currentCenter: latLng(47.41322, -1.219482),
-      showParagraph: false,
-      mapOptions: {
-        zoomSnap: 0.5,
-      },
-      showMap: true,
-    };
-  },
   components: {
-    "l-map": LMap,
-    "l-tile-layer": LTileLayer,
-    "l-marker": LMarker,
-    "l-popup": LPopup,
-    "l-tooltip": LTooltip,
+    Map,
   },
   created() {
     this.getLoads();
-    console.log(this.loads);
+    this.center = [32.8323435,-97.1628612]
   },
-
   methods: {
+
     async getLoads() {
-      this.loads = await firebase
+      const getload = await firebase
         .firestore()
         .collection("users")
         .doc(firebase.auth().currentUser.uid)
         .collection("loads")
-        .where("active", "==", true)
-        .onSnapshot((querySnapshot) => {
-          var loads = [];
+        .get()
+        .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            loads.push(doc.data());
-            this.loads = loads;
-            // console.log(loads);
+            // doc.data() is never undefined for query doc snapshots
+            this.loads.push(doc.data());
           });
+          console.log(this.loads);
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
         });
     },
-    zoomUpdate(zoom) {
-      this.currentZoom = zoom;
-    },
-    centerUpdate(center) {
-      this.currentCenter = center;
-    },
-    showLongText() {
-      this.showParagraph = !this.showParagraph;
-    },
-    innerClick() {
-      alert("Click!");
-    },
+    setLoads(a,b,c,d){
+      this.center  = [(a+c)/2,(b+d)/2]
+      this.originCoord = [a,b]
+      this.destinationCoord = [c,d]
+      console.log(arguments)
+    }
+  },
+  data() {
+    return {
+      originCoord: [32.8323435,-97.1628612],
+      destinationCoord: [31.8323435,-96.1628612],
+      center: null,
+      address: {
+        1: {},
+        2: {},
+      },
+      loads: [],
+    };
   },
 };
 </script>
 
-<style></style>
+<style>
+</style>

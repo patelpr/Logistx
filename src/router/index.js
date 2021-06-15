@@ -16,6 +16,13 @@ Vue.use(Router);
 let router = new Router({
   routes: [
     {
+      path: "/",
+      name: "Home",
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: "/loads",
       name: "loads",
       component: Loads,

@@ -3,10 +3,19 @@
     <v-map
       ref="myMap"
       :zoom="zoom"
+      :bounds="bounds"
       :center="center"
-      style="height: 100vh; width:100vw; position:absolute; left:54px;top:0px;"
+
+      style="
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        left: 54px;
+        top: 0px;
+        z-index: 0;
+      "
     >
-      <v-tilelayer :url="url" :attribution="attribution"> Hell o</v-tilelayer>
+      <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
     </v-map>
   </div>
 </template>
@@ -40,33 +49,42 @@ export default {
     // "v-marker": LMarker,
   },
   methods: {
-    doSomethingOnReady() {
-      L.Routing.control({
-        router: osrRouter,
-        formatter: L.routing.formatterORS({
-          language: "en", // language of instructions & control ui
-          steptotext: true, // force using internal formatter instead of ORS instructions
-        }),
-      }).addTo(this.$refs.myMap.mapObject);
+
+    centerDefault() {
+      return this.center || [32.8323435, -97.1628612];
     },
+    // doSomethingOnReady() {
+    //   L.Routing.control({
+    //     router: osrRouter,
+    //     formatter: L.routing.formatterORS({
+    //       language: "en", // language of instructions & control ui
+    //       steptotext: true, // force using internal formatter instead of ORS instructions
+    //     }),
+    //   }).addTo(this.$refs.myMap.mapObject);
+    // },
+  },
+  props: {
+    center: { type: Array },
+    origin: { type: Array },
+    destination: { type: Array },
   },
   data() {
     return {
-      zoom: 13,
-      center: [47.41322, -1.219482],
+      zoom: 12,
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap || </a> contributors',
-
+        bounds :new L.LatLngBounds(this.origin, this.destination),
+        
       markers: [
         {
           id: 1,
-          latlng: L.latLng(47.41722, -1.222482),
+          latlng: L.latLng(this.origin),
           content: "Hi! this is my popup data",
         },
         {
           id: 2,
-          latlng: L.latLng(47.41722, -1.25),
+          latlng: L.latLng(this.destination),
           content: "Another",
         },
       ],
@@ -77,8 +95,8 @@ export default {
 
 <style scoped>
 @import "~leaflet/dist/leaflet.css";
-#map{
-    overflow: hidden;
-    scrollbar-width: 1px;
+#map {
+  overflow: hidden;
+  scrollbar-width: 1px;
 }
 </style>
