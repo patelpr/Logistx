@@ -31,9 +31,10 @@ let router = new Router({
       },
     },
     {
-      path: "/load/",
-      name: "load",
-      component: Loads,
+      path: "/load/:id",
+      name: "Load",
+      component: Load,
+      props:true,
       meta: {
         requiresAuth: true,
       },

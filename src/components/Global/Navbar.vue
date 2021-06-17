@@ -1,16 +1,16 @@
 <template>
       <v-navigation-drawer
-      color="grey lighten-3"
+      color="primary"
+      dark
       expand-on-hover
       app
       permanent
-      clipped
       left
     >
       <v-list nav>
         <v-avatar
           class="d-block text-center mx-auto mt-4"
-          color="grey darken-1"
+          color="white darken-1"
           size="36"
         ></v-avatar>
 
@@ -57,6 +57,10 @@ export default {
         name: "Add Loads",
         icon: "mdi-plus",
         url: "/addloads",
+      },      {
+        name: "Add Equipment",
+        icon: "mdi-plus",
+        url: "/addequips",
       },
     ],
   }),

@@ -234,6 +234,7 @@ import Address from "../Global/Address.vue";
 import axios from "axios";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
+import H from "../../assets/fastpolylines"
 export default {
   data() {
     return {
@@ -376,11 +377,8 @@ export default {
                 console.log(res);
                 this.load.route.summary =
                   res.data.features[0].properties.summary;
-                let flatArr = this.flatten(
-                  res.data.features[0].geometry.coordinates
-                );
-                this.load.route.geometry = flatArr;
-
+                  console.log(res.data.features[0].geometry.coordinates)
+                this.load.route.geometry = H.encode({polyline:res.data.features[0].geometry.coordinates})
                 this.load.createdAt = Date.now();
                 this.submit();
               })
