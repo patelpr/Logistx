@@ -13,9 +13,7 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3" @click="e1 = 3">
-        Details
-      </v-stepper-step>
+      <v-stepper-step step="3" @click="e1 = 3"> Details </v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -28,7 +26,7 @@
             <vue-google-autocomplete
               id="origin"
               class="pa-5"
-              style="border:2px solid black;"
+              style="border: 2px solid black"
               classname="search-location"
               placeholder="Start typing Address"
               :country="['us']"
@@ -42,7 +40,7 @@
             <v-col cols="12" md="6">
               <input
                 class="pa-3"
-                style="border:2px solid black;"
+                style="border: 2px solid black"
                 type="datetime-local"
                 id="meeting-time"
                 name="pickuptime"
@@ -64,9 +62,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="e1 = 2">
-          Continue
-        </v-btn>
+        <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
@@ -78,7 +74,7 @@
             <vue-google-autocomplete
               id="destination"
               class="pa-5"
-              style="border:2px solid black;"
+              style="border: 2px solid black"
               classname="search-location"
               placeholder="Start typing Address"
               :country="['us']"
@@ -92,7 +88,7 @@
               <input
                 type="datetime-local"
                 class="pa-3"
-                style="border:2px solid black;"
+                style="border: 2px solid black"
                 name="delivery-time"
                 v-model="load.destination.time"
                 pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
@@ -112,9 +108,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="e1 = 3">
-          Continue
-        </v-btn>
+        <v-btn color="primary" @click="e1 = 3"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -132,12 +126,8 @@
                 v-model="load.weight"
                 single-line
               >
-                <v-icon slot="prepend">
-                  mdi-weight
-                </v-icon>
-                <v-icon slot="append">
-                  mdi-weight-pound
-                </v-icon></v-text-field
+                <v-icon slot="prepend"> mdi-weight </v-icon>
+                <v-icon slot="append"> mdi-weight-pound </v-icon></v-text-field
               >
             </v-col>
             <v-col cols="12" md="4">
@@ -148,9 +138,7 @@
                 v-model="load.rate"
                 single-line
               >
-                <v-icon slot="prepend">
-                  mdi-currency-usd
-                </v-icon>
+                <v-icon slot="prepend"> mdi-currency-usd </v-icon>
                 <v-icon slot="append"> mdi-decimal </v-icon></v-text-field
               >
             </v-col>
@@ -162,12 +150,8 @@
                 placeholder="Reefer / Van"
                 single-line
               >
-                <v-icon slot="prepend">
-                  mdi-truck-outline
-                </v-icon>
-                <v-icon slot="append">
-                  mdi-truck-trailer
-                </v-icon></v-text-field
+                <v-icon slot="prepend"> mdi-truck-outline </v-icon>
+                <v-icon slot="append"> mdi-truck-trailer </v-icon></v-text-field
               >
             </v-col>
           </v-row>
@@ -183,9 +167,7 @@
                 placeholder="Name"
                 single-line
               >
-                <v-icon slot="append">
-                  mdi-account
-                </v-icon></v-text-field
+                <v-icon slot="append"> mdi-account </v-icon></v-text-field
               >
             </v-col>
             <v-col cols="12" md="4">
@@ -197,9 +179,7 @@
                 placeholder="Number"
                 single-line
               >
-                <v-icon slot="append">
-                  mdi-phone
-                </v-icon></v-text-field
+                <v-icon slot="append"> mdi-phone </v-icon></v-text-field
               >
             </v-col>
             <v-col cols="12" md="4">
@@ -211,9 +191,7 @@
                 :rules="emailRules"
                 single-line
               >
-                <v-icon slot="append">
-                  mdi-at
-                </v-icon></v-text-field
+                <v-icon slot="append"> mdi-at </v-icon></v-text-field
               >
             </v-col>
           </v-row>
@@ -245,9 +223,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="saveRoute()">
-          Book Load
-        </v-btn>
+        <v-btn color="primary" @click="saveRoute()"> Book Load </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -256,7 +232,7 @@
 <script>
 import Address from "../Global/Address.vue";
 import axios from "axios";
-import VueGoogleAutocomplete from "vue-google-autocomplete";  
+import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
 export default {
   data() {
@@ -356,6 +332,12 @@ export default {
       // console.log(address_comp);
       return address_comp;
     },
+    flatten(arr) {
+      return arr.reduce(
+        (acc, cur) => acc.concat(Array.isArray(cur) ? this.flatten(cur) : cur),
+        []
+      );
+    },
     clear() {
       console.log(this.load);
       this.load = {
@@ -394,9 +376,12 @@ export default {
                 console.log(res);
                 this.load.route.summary =
                   res.data.features[0].properties.summary;
-                this.load.route.segments =
-                  res.data.features[0].properties.segments[0];
+                let flatArr = this.flatten(
+                  res.data.features[0].geometry.coordinates
+                );
+                this.load.route.geometry = flatArr;
 
+                this.load.createdAt = Date.now();
                 this.submit();
               })
           : console.error("Destination and origin must be different");
@@ -404,14 +389,15 @@ export default {
         console.log(error);
       }
     },
-    setOrigin: function(e, p, i) {
+
+    setOrigin: function (e, p, i) {
       this.load.origin.location.formatted_address = p.formatted_address;
       this.load.origin.location.latitude = e.latitude;
       this.load.origin.location.longitude = e.longitude;
       this.load.origin.location.url = p.url;
       this.load.origin.location.address_components = this.assessLocale(p);
     },
-    setDestination: function(e, p, i) {
+    setDestination: function (e, p, i) {
       this.load.destination.location.formatted_address = p.formatted_address;
       this.load.destination.location.latitude = e.latitude;
       this.load.destination.location.longitude = e.longitude;
@@ -420,19 +406,16 @@ export default {
     },
     submit() {
       try {
-        firebase
+        const docRef = firebase
           .firestore()
           .collection("users")
           .doc(firebase.auth().currentUser.uid)
           .collection("loads")
-          .add(this.load);
-        // .then(function(docRef) {
-        //   // this.load.ratecon && this.uploadRateCon(this.load.ratecon, docRef.id);
-        //   console.log("Document written with ID: ", docRef.id);
-        // })
-        // .catch(function(error) {
-        //   console.error("Error adding document: ", error);
-        // });
+          .doc();
+        console.log(docRef.id);
+        this.load.id = docRef.id;
+        console.log(this.load);
+        docRef.set(this.load);
       } catch (error) {
         console.log(error);
       } finally {

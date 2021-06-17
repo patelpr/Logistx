@@ -1,36 +1,22 @@
 <template>
   <v-app>
-    <Navbar />
-
-    <v-container>
-      <v-row>
-        <v-container class="pl-15">
-          <router-view></router-view>
-        </v-container>
-      </v-row>
-    </v-container>
-
-    <!-- <v-navigation-drawer app right>
-      <v-list>
-      </v-list>
-    </v-navigation-drawer> -->
-    <!-- <v-main> -->
-
-    <!-- </v-main> -->
-    <v-alert
+      <Navbar />
+      <v-container class="pa-0">
+        <router-view></router-view>
+      </v-container>
+    <!-- <v-alert
       dismissible
       border="top"
       type="error"
-      icon="$mdiAccount"
+      icon="mdiAccount"
       v-model="alert.msg"
     >
-    </v-alert>
+    </v-alert> -->
   </v-app>
 </template>
 
 <script>
 import Navbar from "./components/Global/Navbar.vue";
-import firebase from "firebase";
 export default {
   data() {
     return {
@@ -52,20 +38,24 @@ export default {
     },
   },
   created() {
-    window.onerror = function(msg, src, linenum, colnum, error) {
-      $("#app").append(``);
+    window.onerror = function (msg, src, linenum, colnum, error) {
+      document.getElementById("app").append(``);
       /*your code*/
       this.alert.msg = msg;
-      s;
+
       this.alert.src = src;
-      s;
+
       this.alert.linenum = linenum;
-      s;
+
       this.alert.colnum = colnum;
-      s;
+
       this.alert.error = error;
-      s;
     };
   },
 };
 </script>
+<style>
+body {
+  box-sizing: border-box;
+}
+</style>
