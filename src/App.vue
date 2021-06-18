@@ -1,9 +1,13 @@
 <template>
   <v-app>
-      <Navbar />
-      <v-container fluid class="pa-0" style="margin-left:56px;">
-        <router-view></router-view>
+    <Navbar />
+    <v-content>
+      <v-container fluid ma-0 pa-0 fill-height
+        ><v-row no-gutters align="start" justify="space-around" >
+          <router-view></router-view>
+        </v-row>
       </v-container>
+    </v-content>
     <!-- <v-alert
       dismissible
       border="top"

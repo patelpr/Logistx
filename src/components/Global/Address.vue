@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-card>
+    <v-card elevation="0">
       <v-card-title> {{ title }} Information </v-card-title>
       <v-card-subtitle v-if="load.time">
-        {{ title + " time: " + load.time }}
+        {{ title + " time: "}}<br>{{ Date(load.time).toString() }}
       </v-card-subtitle>
       <v-card-text>
         {{ load.location.formatted_address }}

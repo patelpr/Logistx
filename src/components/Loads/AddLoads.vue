@@ -1,24 +1,24 @@
 <template>
-  <v-stepper v-model="e1">
+  <v-stepper v-model="l1" non-linear >
     <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1" @click="e1 = 1">
+      <v-stepper-step :complete="l1 > 1" step="1" editable>
         Origin
       </v-stepper-step>
 
       <v-divider></v-divider>
 
-      <v-stepper-step :complete="e1 > 2" step="2" @click="e1 = 2">
+      <v-stepper-step :complete="l1 > 2" step="2" editable>
         Destination
       </v-stepper-step>
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3" @click="e1 = 3"> Details </v-stepper-step>
+      <v-stepper-step step="3" editable> Details </v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card class="mb-12 pa-12">
+        <v-card class="mb-12 pa-12" elevation="0">
           <v-row>
             <h3>Pick Up Information</h3>
           </v-row>
@@ -62,11 +62,11 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
+        <v-btn color="primary" @click="l1 = 2"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card class="mb-12 pa-12">
+        <v-card class="mb-12 pa-12" elevation="0">
           <v-row>
             <h3>Delivery Information</h3>
           </v-row>
@@ -91,7 +91,6 @@
                 style="border: 2px solid black"
                 name="delivery-time"
                 v-model="load.destination.time"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
                 :minDate="Date.now()"
                 required
               />
@@ -108,11 +107,11 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="e1 = 3"> Continue </v-btn>
+        <v-btn color="primary" @click="l1 = 3"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-card class="mb-12 pa-12">
+        <v-card class="mb-12 pa-12" elevation="0">
           <v-row>
             <h3>Additional Load Details</h3>
           </v-row>
@@ -122,7 +121,7 @@
               <v-text-field
                 name="weight"
                 label="Weight"
-                type="number"
+                v-mask="'######'"
                 v-model="load.weight"
                 single-line
               >
@@ -134,6 +133,7 @@
               <v-text-field
                 name="rate"
                 type="number"
+                v-mask="'######'"
                 label="Rate"
                 v-model="load.rate"
                 single-line
@@ -205,11 +205,11 @@
             <v-col cols="12" md="6">
               <Address :load="load.origin" title="Pickup" />
 
-              <v-btn class="ma-2" @click="e1 = 1">EDIT ORIGIN </v-btn>
+              <v-btn class="ma-2" @click="l1 = 1">EDIT ORIGIN </v-btn>
             </v-col>
             <v-col cols="12" md="6">
               <Address :load="load.destination" title="Delivery" />
-              <v-btn class="ma-2" @click="e1 = 2">EDIT DELIVERY</v-btn>
+              <v-btn class="ma-2" @click="l1 = 2">EDIT DELIVERY</v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -234,16 +234,11 @@ import Address from "../Global/Address.vue";
 import axios from "axios";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
-import H from "../../assets/fastpolylines"
+import H from "../../assets/fastpolylines";
 export default {
   data() {
     return {
-      e1: 1,
-      phoneRules: [
-        (v) => !!v || "This field is required",
-        (v) => (v && v >= 1000000000) || "10 Digit Phone Number",
-        (v) => (v && v <= 9999999999) || "10 Digit Phone Number bad",
-      ],
+      l1: 1,
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -377,8 +372,10 @@ export default {
                 console.log(res);
                 this.load.route.summary =
                   res.data.features[0].properties.summary;
-                  console.log(res.data.features[0].geometry.coordinates)
-                this.load.route.geometry = H.encode({polyline:res.data.features[0].geometry.coordinates})
+                console.log(res.data.features[0].geometry.coordinates);
+                this.load.route.geometry = H.encode({
+                  polyline: res.data.features[0].geometry.coordinates,
+                });
                 this.load.createdAt = Date.now();
                 this.submit();
               })

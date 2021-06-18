@@ -5,6 +5,7 @@
       :bounds="[origin, destination]"
       style="height: 100vh"
       v-if="selectedLoad"
+      @ready="setdata()"
     >
       <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>
@@ -12,19 +13,14 @@
       <l-polyline :latLngs="poly.geometry.coordinates" lineCap lineJoin>
       </l-polyline>
     </v-map>
-    <v-row
-      v-else
-      align="center"
-      justify="space-around"
-    >
-      Select A Load To View the Map
+    <v-row v-else justify="space-around" class="ma-4">
+      <h1>Select A Load To View the Map</h1>
     </v-row>
   </div>
 </template>
 
 <script>
 import { LMap, LTileLayer, LMarker, LPolyline } from "vue2-leaflet";
-// import L from "leaflet";
 import H from "../assets/fastpolylines";
 export default {
   name: "map",
@@ -41,7 +37,6 @@ export default {
   watch: {
     load: function (x) {
       this.selectedLoad = x;
-      console.log(x);
       this.origin = [
         this.selectedLoad.origin.location.latitude,
         this.selectedLoad.origin.location.longitude,
@@ -54,6 +49,9 @@ export default {
     },
   },
   methods: {
+    setdata() {
+      this.selectedLoad = this.load;
+    },
     decode(str) {
       let lines = H.decode(str);
       return {

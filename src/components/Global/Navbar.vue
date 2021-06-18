@@ -5,6 +5,7 @@
       expand-on-hover
       app
       permanent
+      absolute
       left
     >
       <v-list nav>

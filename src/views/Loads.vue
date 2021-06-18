@@ -1,12 +1,16 @@
 <template>
-  <v-row width="100%" no-gutters >
-    <v-col cols="10" v-if="selectedLoad"> <Map  :load="selectedLoad" /></v-col>
-    <v-col cols="2"
-      ><v-navigation-drawer right width="100%">
-                <v-card v-if="selectedLoad" elevation="0">
-          <v-card-title primary-title>
-            <div></div>
-          </v-card-title>
+  <v-row no-gutters>
+    <v-col cols="10" v-if="selectedLoad"> <Map :load="selectedLoad" /></v-col>
+    <v-col  cols="2"
+      ><v-navigation-drawer right width="16.6vw">
+        <v-card v-if="selectedLoad" elevation="0">
+          <v-card-subtitle>{{
+            selectedLoad.origin.location.formatted_address
+          }}</v-card-subtitle>
+
+          <v-card-subtitle>{{
+            selectedLoad.destination.location.formatted_address
+          }}</v-card-subtitle>
           <v-card-subtitle>
             <div class="headline">
               {{ (selectedLoad.route.summary.distance / 1609).toFixed(2) }}
@@ -14,17 +18,28 @@
             </div>
             <span>{{ setTime() }} </span>
           </v-card-subtitle>
-          <v-card-actions>
-            <v-btn icon
+
+          <v-card-actions >
+            <v-btn
+              icon
               :to="{
                 name: 'Load',
                 params: { id: selectedLoad.id, load: selectedLoad },
               }"
               ><v-icon>mdi-pencil</v-icon></v-btn
             >
-            <v-btn text icon @click="archiveLoad(selectedLoad.id)" color="primary"
+            <v-btn
+              text
+              icon
+              @click="archiveLoad(selectedLoad.id)"
+              color="primary"
               ><v-icon>mdi-archive</v-icon></v-btn
             >
+            <a target="_blank" :href="link()"> <v-btn
+              text
+              icon
+              ><v-icon>mdi-navigation-outline</v-icon></v-btn
+            ></a>
             <v-spacer></v-spacer>
           </v-card-actions>
           <!-- <v-slide-y-transition>
@@ -33,12 +48,13 @@
         </v-card>
         <v-divider></v-divider>
         <v-list nav dense>
+
           <v-list-item
             v-for="(load, i) in loads"
             :key="i"
             @click="selectLoad(load)"
           >
-            <v-row no-gutters align="stretch">
+            <v-row no-gutters>
               <v-col cols="5">
                 <v-list-item-title>{{
                   load.origin.location.address_components.city
@@ -60,22 +76,8 @@
                 }}</v-list-item-subtitle>
               </v-col>
             </v-row>
-            <!-- <v-list-item-action>
-              <v-btn
-                icon
-                :to="{ name: 'Load', params: { id: load.id, load: load } }"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-            </v-list-item-action>
-            <v-list-item-action>
-              <v-btn icon @click="archiveLoad(load.id)">
-                <v-icon>mdi-archive</v-icon>
-              </v-btn>
-            </v-list-item-action> -->
           </v-list-item>
         </v-list>
-
       </v-navigation-drawer>
     </v-col>
   </v-row>
@@ -92,6 +94,9 @@ export default {
     this.getLoads();
   },
   methods: {
+    link(){
+return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`
+    },
     setTime() {
       let d = Number(this.selectedLoad.route.summary.duration);
       var h = Math.floor(d / 3600);
@@ -104,8 +109,8 @@ export default {
       return hDisplay + mDisplay + sDisplay;
     },
     async getLoads() {
+      this.loads = [];
       try {
-        this.loads = [];
         await firebase
           .firestore()
           .collection("users")
