@@ -1,21 +1,29 @@
 <template>
   <div id="theMap">
     <v-map
-      v-if="load"
       ref="myMap"
       :bounds="[origin, destination]"
       style="height: 100vh"
+      v-if="selectedLoad"
     >
       <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>
       <v-marker :lat-lng="destination"></v-marker>
-      <l-polyline :latLngs="poly.geometry.coordinates" lineCap lineJoin> </l-polyline>
+      <l-polyline :latLngs="poly.geometry.coordinates" lineCap lineJoin>
+      </l-polyline>
     </v-map>
+    <v-row
+      v-else
+      align="center"
+      justify="space-around"
+    >
+      Select A Load To View the Map
+    </v-row>
   </div>
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LPolyline,  } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LPolyline } from "vue2-leaflet";
 // import L from "leaflet";
 import H from "../assets/fastpolylines";
 export default {
@@ -32,17 +40,18 @@ export default {
   },
   watch: {
     load: function (x) {
-      this.origin = [x.origin.location.latitude, x.origin.location.longitude];
-      this.destination = [
-        x.destination.location.latitude,
-        x.destination.location.longitude,
+      this.selectedLoad = x;
+      console.log(x);
+      this.origin = [
+        this.selectedLoad.origin.location.latitude,
+        this.selectedLoad.origin.location.longitude,
       ];
+      this.destination = [
+        this.selectedLoad.destination.location.latitude,
+        this.selectedLoad.destination.location.longitude,
+      ];
+      this.poly = this.decode(x.route.geometry);
     },
-    polyline: function(x){
-      this.poly = this.decode(x)
-
-      console.log(this.poly)
-    }
   },
   methods: {
     decode(str) {
@@ -59,6 +68,7 @@ export default {
 
   data() {
     return {
+      selectedLoad: null,
       origin: [32.8323435, -97.1628612],
       destination: [31.8323435, -96.1628612],
       poly: [this.origin, this.destination],
