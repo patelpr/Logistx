@@ -1,7 +1,7 @@
 <template>
   <v-app>
       <Navbar />
-      <v-container fluid class="pa-0" style="margin:0, 0, 0, 56px;">
+      <v-container fluid class="pa-0" style="margin-left:56px;">
         <router-view></router-view>
       </v-container>
     <!-- <v-alert

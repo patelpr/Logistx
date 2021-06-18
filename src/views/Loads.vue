@@ -1,37 +1,9 @@
 <template>
   <v-row width="100%" no-gutters>
-    <v-col cols="10"> <Map :load="selectedLoad" :polyline="poly" /></v-col>
+    <v-col cols="10"> <Map :load="selectedLoad" :polyline="poly"/></v-col>
     <v-col cols="2"
-      ><v-navigation-drawer right>
-        <v-card>
-          <v-row>
-            <v-col cols="6">
-              <v-card-subtitle>{{
-                selectedLoad.origin.location.address_components.streetnumber +
-                " " +
-                selectedLoad.origin.location.address_components.street
-              }}</v-card-subtitle>
-              <v-card-subtitle>{{
-                selectedLoad.origin.location.address_components.city +
-                ", " +
-                selectedLoad.origin.location.address_components.state +
-                " " +
-                selectedLoad.origin.location.address_components.postcode +
-                " " +
-                selectedLoad.origin.location.address_components.country
-              }}</v-card-subtitle>
-            </v-col>
-            <v-col cols="6">
-              <v-card-title>Destination</v-card-title>
-
-              <v-card-subtitle>{{
-                selectedLoad.destination.location.formatted_address
-              }}</v-card-subtitle>
-            </v-col>
-          </v-row>
-        </v-card>
+      ><v-navigation-drawer right width="100%">
         <v-list nav dense>
-          <v-divider></v-divider>
           <v-list-item
             v-for="(load, i) in loads"
             :key="i"
@@ -74,6 +46,34 @@
             </v-list-item-action> -->
           </v-list-item>
         </v-list>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">
+                {{
+                  (selectedLoad.route.summary.distance / 1609).toFixed(2)
+                }}
+                miles
+              </div>
+              <span
+                >{{
+                  setTime()
+                }}
+                </span
+              >
+            </div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn flat>text</v-btn>
+            <v-btn flat color="primary">text</v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+          <v-slide-y-transition>
+            <v-card-text v-show="show">
+              hidden text
+            </v-card-text>
+          </v-slide-y-transition>
+        </v-card>
       </v-navigation-drawer>
     </v-col>
   </v-row>
@@ -89,7 +89,23 @@ export default {
   created() {
     this.getLoads();
   },
+  watch: {
+    loads: function(x) {
+      this.selectedLoad = x[0];
+    },
+  },
   methods: {
+    setTime(){
+    let d = Number(this.selectedLoad.route.summary.duration);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay; 
+    },
     async getLoads() {
       try {
         await firebase
@@ -100,7 +116,7 @@ export default {
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-              this.selectLoad(doc.data());
+              console.log(doc.data());
               this.loads.push(doc.data());
             });
           });
@@ -113,7 +129,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc()
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc(id)
           .update({ active: false });
@@ -128,7 +144,7 @@ export default {
   },
   data() {
     return {
-      selectedLoad: this.loads[0],
+      selectedLoad: null,
       poly: null,
       loads: [],
     };
@@ -136,5 +152,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

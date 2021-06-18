@@ -8,6 +8,7 @@ import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 
+
 Vue.use(Vue2Leaflet);
 Vue.use(L);
 Vue.directive("mask", VueMaskDirective);
