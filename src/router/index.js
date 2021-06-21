@@ -1,14 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Login from "@/views/Login";
-import Loads from "@/views/Loads";
-import Drivers from "@/views/Drivers";
-import Equipment from "@/views/Equipment";
-import AddLoads from "../components/Loads/AddLoads";
-
-import DriverApp from "..//components/Drivers/DriverApp.vue";
-
-import Load from "../components/Loads/Load";
 
 import firebase from "firebase";
 Vue.use(Router);
@@ -18,14 +9,22 @@ let router = new Router({
     {
       path: "/",
       name: "Home",
+      component: () => import("@/views/Dash"),
       meta: {
         requiresAuth: true,
       },
     },
+
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import("@/views/Login"),
+    },
+    //Loads
     {
       path: "/loads",
       name: "loads",
-      component: Loads,
+      component: () => import("@/views/Loads"),
       meta: {
         requiresAuth: true,
       },
@@ -33,55 +32,76 @@ let router = new Router({
     {
       path: "/load/:id",
       name: "Load",
-      component: Load,
-      props:true,
+      component: () => import("@/components/Loads/Load"),
+      props: true,
       meta: {
         requiresAuth: true,
       },
     },
 
     {
-      path: "/addloads",
+      path: "/loads/add",
       name: "Add Loads",
-      component: AddLoads,
+      component: () => import("@/components/Loads/AddLoads.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+
+    {
+      path: "/drivers",
+      name: "Drivers",
+      component: () => import("@/views/Drivers"),
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: "/application",
-      name: "Application",
-      component: DriverApp,
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
-      path: "/load/:id",
-      name: " Load",
-      component: Load,
+      path: "/driver/:id",
+      name: "Driver",
+      component: () => import("@/components/Drivers/Driver"),
       props: true,
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: "/login",
-      name: "Login",
-      component: Login,
-    },
-    {
-      path: "/drivers",
-      name: "Drivers",
-      component: Drivers,
+      path: "/drivers/add",
+      name: "Add Drivers",
+      component: () => import("../components/Drivers/AddDriver.vue"),
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: "/equipment",
+      path: "drivers/application",
+      name: "Drivers Application",
+      component: () => import("@/components/Drivers/DriverApp.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/equipments",
       name: "Equipment",
-      component: Equipment,
+      component: () => import("@/views/Equipments"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/Equipment/:id",
+      name: "Equipment",
+      component: () => import("@/components/Equipments/Equipment"),
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/equipments/add",
+      name: "Add Equipments",
+      component: () => import("@/components/Equipments/AddEquipment.vue"),
       meta: {
         requiresAuth: true,
       },

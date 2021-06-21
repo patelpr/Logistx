@@ -3,10 +3,13 @@
     <Navbar />
     <v-content>
       <v-container fluid ma-0 pa-0 fill-height
-        ><v-row no-gutters align="start" justify="space-around" >
+        ><v-row no-gutters align="start" justify="space-around">
           <router-view></router-view>
         </v-row>
+    <Add />
+
       </v-container>
+
     </v-content>
     <!-- <v-alert
       dismissible
@@ -20,6 +23,7 @@
 </template>
 
 <script>
+import Add from "./components/Global/Add.vue";
 import Navbar from "./components/Global/Navbar.vue";
 export default {
   data() {
@@ -35,6 +39,7 @@ export default {
   },
   components: {
     Navbar,
+    Add,
   },
   computed: {
     currentRouteName() {
@@ -42,7 +47,7 @@ export default {
     },
   },
   created() {
-    window.onerror = function (msg, src, linenum, colnum, error) {
+    window.onerror = function(msg, src, linenum, colnum, error) {
       document.getElementById("app").append(``);
       /*your code*/
       this.alert.msg = msg;

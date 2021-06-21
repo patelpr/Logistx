@@ -1,7 +1,7 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="10" v-if="selectedLoad"> <Map :load="selectedLoad" /></v-col>
-    <v-col  cols="2"
+    <v-col cols="10"> <Map :load="selectedLoad"/></v-col>
+    <v-col cols="2"
       ><v-navigation-drawer right width="16.6vw">
         <v-card v-if="selectedLoad" elevation="0">
           <v-card-subtitle>{{
@@ -19,7 +19,7 @@
             <span>{{ setTime() }} </span>
           </v-card-subtitle>
 
-          <v-card-actions >
+          <v-card-actions>
             <v-btn
               icon
               :to="{
@@ -35,20 +35,22 @@
               color="primary"
               ><v-icon>mdi-archive</v-icon></v-btn
             >
-            <a target="_blank" :href="link()"> <v-btn
-              text
-              icon
-              ><v-icon>mdi-navigation-outline</v-icon></v-btn
-            ></a>
+            <a target="_blank" :href="link()">
+              <v-btn text icon
+                ><v-icon>mdi-navigation-outline</v-icon></v-btn
+              ></a
+            >
             <v-spacer></v-spacer>
           </v-card-actions>
           <!-- <v-slide-y-transition>
             <v-card-text v-show="show"> hidden text </v-card-text>
           </v-slide-y-transition> -->
         </v-card>
+        <v-card v-else class="pa-1">
+          <v-card-title>Select Load Below </v-card-title>
+        </v-card>
         <v-divider></v-divider>
         <v-list nav dense>
-
           <v-list-item
             v-for="(load, i) in loads"
             :key="i"
@@ -94,8 +96,8 @@ export default {
     this.getLoads();
   },
   methods: {
-    link(){
-return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`
+    link() {
+      return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`;
     },
     setTime() {
       let d = Number(this.selectedLoad.route.summary.duration);
@@ -119,11 +121,7 @@ return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.form
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-              console.log("newLoad");
-
-              this.loads.push(doc.data());
-              this.selectLoad(doc.data());
-              console.log(this.selectedLoad);
+                this.loads.push(doc.data());
             });
           });
       } catch (error) {
@@ -151,6 +149,7 @@ return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.form
     return {
       selectedLoad: null,
       loads: [],
+      dialog:false
     };
   },
 };

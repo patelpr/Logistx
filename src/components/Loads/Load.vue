@@ -1,17 +1,12 @@
 <template>
   <v-card>
     <v-toolbar flat color="primary" dark>
-      <v-toolbar-title>LOAD {{ load.createdAt }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        icon
-        :to="{
-          name: 'Load',
-          params: { id: load.id, load: load },
-        }"
-        ><v-icon>mdi-pencil</v-icon></v-btn
+      <v-toolbar-title
+        >LOAD
+        {{ selectedLoad.createdAt || "No Load Selected" }}</v-toolbar-title
       >
-      <v-btn text icon @click="archiveLoad(load.id)"
+      <v-spacer></v-spacer>
+      <v-btn text icon @click="archiveLoad(selectedLoad.id)"
         ><v-icon>mdi-archive</v-icon></v-btn
       >
       <a target="_blank" :href="link()">
@@ -23,10 +18,10 @@
         <v-card flat elevation="0">
           <v-row>
             <v-col cols="12" md="6" align="start">
-              <Address :load="load.origin" title="Pickup" />
+              <Address :load="selectedLoad.origin" title="Pickup" />
             </v-col>
             <v-col cols="12" md="6">
-              <Address :load="load.destination" title="Delivery" />
+              <Address :load="selectedLoad.destination" title="Delivery" />
             </v-col>
           </v-row>
         </v-card>
@@ -63,6 +58,7 @@ export default {
   data() {
     return {
       tab: 1,
+      selectedLoad: null,
     };
   },
   props: {
@@ -74,25 +70,22 @@ export default {
     },
   },
   created() {
-    if (!this.load) {
-      this.load = this.getLoads();
-    }
-    console.log(this.load);
+    this.getLoads();
   },
   methods: {
     link() {
-      return `https://www.google.com/maps/dir/${this.load.origin.location.formatted_address}/${this.load.destination.location.formatted_address}/`;
+      return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`;
     },
-    getLoads() {
+    async getLoads() {
       try {
-        return firebase
+        await firebase
           .firestore()
           .collection("users")
           .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc(this.id)
           .get()
-          .then((doc) => (this.load = doc.data()));
+          .then((doc) => (this.selectedLoad = doc.data()));
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
@@ -102,5 +95,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

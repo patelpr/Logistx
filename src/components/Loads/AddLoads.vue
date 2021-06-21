@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-model="l1" non-linear >
+  <v-stepper v-model="l1" non-linear>
     <v-stepper-header>
       <v-stepper-step :complete="l1 > 1" step="1" editable>
         Origin
@@ -13,7 +13,7 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3" editable> Details </v-stepper-step>
+      <v-stepper-step step="3" editable> Load Details </v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -246,11 +246,10 @@ export default {
           "E-mail must be valid",
       ],
       valid: true,
+      route: {
+        summary: {},
+      },
       load: {
-        route: {
-          summary: null,
-          segments: null,
-        },
         num: null,
         weight: null,
         driver: {
@@ -276,7 +275,7 @@ export default {
         destination: {
           location: {},
           time: null,
-          ref: null,
+          ref: "",
         },
       },
     };
@@ -328,12 +327,6 @@ export default {
       // console.log(address_comp);
       return address_comp;
     },
-    flatten(arr) {
-      return arr.reduce(
-        (acc, cur) => acc.concat(Array.isArray(cur) ? this.flatten(cur) : cur),
-        []
-      );
-    },
     clear() {
       console.log(this.load);
       this.load = {
@@ -377,7 +370,7 @@ export default {
                   polyline: res.data.features[0].geometry.coordinates,
                 });
                 this.load.createdAt = Date.now();
-                this.submit();
+                this.loadSubmit();
               })
           : console.error("Destination and origin must be different");
       } catch (error) {
@@ -385,31 +378,29 @@ export default {
       }
     },
 
-    setOrigin: function (e, p, i) {
+    setOrigin: function(e, p, i) {
       this.load.origin.location.formatted_address = p.formatted_address;
       this.load.origin.location.latitude = e.latitude;
       this.load.origin.location.longitude = e.longitude;
       this.load.origin.location.url = p.url;
       this.load.origin.location.address_components = this.assessLocale(p);
     },
-    setDestination: function (e, p, i) {
+    setDestination: function(e, p, i) {
       this.load.destination.location.formatted_address = p.formatted_address;
       this.load.destination.location.latitude = e.latitude;
       this.load.destination.location.longitude = e.longitude;
       this.load.destination.location.url = p.url;
       this.load.destination.location.address_components = this.assessLocale(p);
     },
-    submit() {
+    loadSubmit() {
       try {
         const docRef = firebase
           .firestore()
           .collection("users")
           .doc(firebase.auth().currentUser.uid)
-          .collection("loads")
+          .collection("equipments")
           .doc();
-        console.log(docRef.id);
         this.load.id = docRef.id;
-        console.log(this.load);
         docRef.set(this.load);
       } catch (error) {
         console.log(error);

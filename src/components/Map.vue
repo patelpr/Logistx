@@ -1,21 +1,31 @@
 <template>
   <div id="theMap">
+    <v-row v-if="!selectedLoad" justify="space-around" class="ma-4">
+      <h1>Select A Load To View the Map</h1>
+    </v-row>
+
     <v-map
       ref="myMap"
-      :bounds="[origin, destination]"
+      v-else
+      :bounds="[
+        [
+          selectedLoad.origin.location.latitude,
+          selectedLoad.origin.location.longitude,
+        ],
+        [
+          selectedLoad.destination.location.latitude,
+          selectedLoad.destination.location.longitude,
+        ],
+      ]"
       style="height: 100vh"
-      v-if="selectedLoad"
-      @ready="setdata()"
     >
       <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>
       <v-marker :lat-lng="destination"></v-marker>
+
       <l-polyline :latLngs="poly.geometry.coordinates" lineCap lineJoin>
       </l-polyline>
     </v-map>
-    <v-row v-else justify="space-around" class="ma-4">
-      <h1>Select A Load To View the Map</h1>
-    </v-row>
   </div>
 </template>
 
@@ -32,10 +42,10 @@ export default {
   },
   props: {
     load: { type: Object },
-    polyline: { type: String },
+    drivers: { type: Array },
   },
   watch: {
-    load: function (x) {
+    load: function(x) {
       this.selectedLoad = x;
       this.origin = [
         this.selectedLoad.origin.location.latitude,
@@ -45,13 +55,13 @@ export default {
         this.selectedLoad.destination.location.latitude,
         this.selectedLoad.destination.location.longitude,
       ];
-      this.poly = this.decode(x.route.geometry);
+      this.poly = this.decode(this.selectedLoad.route.geometry);
     },
   },
+  mounted() {
+    this.selectedLoad = this.load;
+  },
   methods: {
-    setdata() {
-      this.selectedLoad = this.load;
-    },
     decode(str) {
       let lines = H.decode(str);
       return {
@@ -67,9 +77,9 @@ export default {
   data() {
     return {
       selectedLoad: null,
-      origin: [32.8323435, -97.1628612],
-      destination: [31.8323435, -96.1628612],
-      poly: [this.origin, this.destination],
+      poly: null,
+      origin: null,
+      destination: null,
 
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:

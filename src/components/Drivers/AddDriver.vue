@@ -11,12 +11,12 @@
         <v-stepper-step editable step="2">
           License Details
         </v-stepper-step>
-
+        <!-- 
         <v-divider></v-divider>
 
         <v-stepper-step editable step="3">
           Employment History
-        </v-stepper-step>
+        </v-stepper-step> -->
       </v-stepper-header>
 
       <v-stepper-items>
@@ -117,7 +117,7 @@
               </v-col>
               <v-col cols="12" md="11">
                 <vue-google-autocomplete
-                  id="driveraddress"
+                  id="employeeaddress"
                   class="pa-5"
                   style="border:1px solid gray;"
                   placeholder="Driver Address"
@@ -194,11 +194,11 @@
             </v-row>
           </v-card>
 
-          <v-btn color="primary" @click="e1 = 3">
-            Continue
+          <v-btn color="primary" @click="submit()">
+            Add Driver
           </v-btn>
         </v-stepper-content>
-
+        <!-- 
         <v-stepper-content step="3">
           <v-card class="mb-12 pa-12">
             <v-card
@@ -257,7 +257,7 @@
             </v-card>
 
             <v-row class="mb-12 pa-12"
-              ><v-btn @click="addEmployment">Add Employment </v-btn></v-row
+              ><v-btn @click="addEmployment">Add Employee</v-btn></v-row
             >
           </v-card>
 
@@ -268,7 +268,7 @@
           <v-btn text>
             Cancel
           </v-btn>
-        </v-stepper-content>
+        </v-stepper-content> -->
       </v-stepper-items>
     </v-form>
   </v-stepper>
@@ -319,16 +319,16 @@ export default {
           drug: null,
           drug_url: null,
         },
-        work: {
-          history: [
-            {
-              company: null,
-              start: null,
-              finish: null,
-              reason: null,
-            },
-          ],
-        },
+        // work: {
+        // history: [
+        //   {
+        //     company: null,
+        //     start: null,
+        //     finish: null,
+        //     reason: null,
+        //   },
+        // ],
+        // },
         company_id: null,
       },
     };
@@ -338,25 +338,26 @@ export default {
   },
 
   methods: {
-    addEmployment() {
-      let add = {
-        company: null,
-        start: null,
-        finish: null,
-        reason: null,
-      };
-      this.driver.work.history.push(add);
-      console.log(this.driver.work.history);
-    },
+    // addEmployment() {
+    //   let add = {
+    //     company: null,
+    //     start: null,
+    //     finish: null,
+    //     reason: null,
+    //   };
+    //   this.driver.work.history.push(add);
+    //   console.log(this.driver.work.history);
+    // },
     setPlace(e, p, i) {
       this.driver.address.format = p.formatted_address;
       this.driver.address.comp = e;
-      //   console.log(this.driver.address);
     },
     submit() {
       try {
         firebase
           .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
           .collection("drivers")
           .add(this.driver);
       } catch (error) {
