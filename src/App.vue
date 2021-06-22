@@ -2,7 +2,7 @@
   <v-app>
     <Navbar />
     <v-content>
-      <v-container fluid ma-0 pa-0 fill-height
+      <v-container fluid ma-0 pa-0 fill-height style="background-color:lightgray"
         ><v-row no-gutters align="start" justify="space-around">
           <router-view></router-view>
         </v-row>
@@ -11,14 +11,6 @@
       </v-container>
 
     </v-content>
-    <!-- <v-alert
-      dismissible
-      border="top"
-      type="error"
-      icon="mdiAccount"
-      v-model="alert.msg"
-    >
-    </v-alert> -->
   </v-app>
 </template>
 

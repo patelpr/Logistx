@@ -20,9 +20,13 @@ L.Icon.Default.mergeOptions({
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
-
+const AUTH_SCOPES = [
+  'email',
+  'profile',
+  'https://www.googleapis.com/auth/analytics',
+]
 Vue.config.productionTip = false;
-const firebaseConfig = {
+const FIREBASE_CONFIG = {
   apiKey: "AIzaSyA-QWdASbkugX3kJyi0lwDE8KfBb__O3dw",
   authDomain: "logistixapps.firebaseapp.com",
   projectId: "logistixapps",
@@ -31,110 +35,77 @@ const firebaseConfig = {
   appId: "1:149781125117:web:9fc79ae3747e4cebc76b94",
   measurementId: "G-83WEQPNMNM",
 };
+const CLIENT_ID = '643107230240-kmp029ie4ifh3vi9fkkahob36ov0kf9r.apps.googleusercontent.com'
+
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.getCurrentUser = () => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      unsubscribe();
-      resolve(user);
-    }, reject);
-  });
-};
+const fb = firebase.initializeApp(FIREBASE_CONFIG)
+// export const db = fb.firestore().collection('users').doc(fb.auth().currentUser.uid)
 
-// const AUTH_SCOPES = [
-//     'email',
-//     'profile',
-//     'https://www.googleapis.com/auth/analytics.readonly',
-//   ]
 
-//   // ....apps.googleusercontent.com
-//   const CLIENT_ID =
-//     "149781125117-3j9d8k0a1re8qgbblu671iujilrqror0.apps.googleusercontent.com";
+export function handleIsSignedIn(isSignedIn) {
+  if (isSignedIn) {
 
-//   function handleIsSignedIn(isSignedIn) {
-//     if (isSignedIn) {
+    const auth2 = gapi.auth2.getAuthInstance()
+    const currentUser = auth2.currentUser.get()
+    const profile = currentUser.getBasicProfile()
 
-//       const auth2 = gapi.auth2.getAuthInstance()
-//       const currentUser = auth2.currentUser.get()
-//       const profile = currentUser.getBasicProfile()
-//       console.log('gapi: user signed in!', {
-//         name: profile.getName(),
-//         imageURL: profile.getImageUrl(),
-//         email: profile.getEmail(),
-//       })
-//       const authResponse = currentUser.getAuthResponse(true)
-//       const credential = firebase.auth.GoogleAuthProvider.credential(
-//         authResponse.id_token,
-//         authResponse.access_token
-//       )
-//       fb.auth().signInWithCredential(credential)
-//         .then(({ user }) => {
-//           console.log('firebase: user signed in!', {
-//             displayName: user.displayName,
-//             email: user.email,
-//             photoURL: user.photoURL,
-//           })
-//         })
+    console.log('gapi: user signed in!', {
+      name: profile.getName(),
+      imageURL: profile.getImageUrl(),
+      email: profile.getEmail(),
+    })
+    const authResponse = currentUser.getAuthResponse(true)
+    const credential = firebase.auth.GoogleAuthProvider.credential(
+      authResponse.id_token,
+      authResponse.access_token
+    )
+    fb.auth().signInWithCredential(credential)
+      .then(({ user }) => {
+        console.log('firebase: user signed in!', {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        })
+      })
 
-//       // Try to make a request to Google Analytics!
-//       gapi.client.analytics.management.accounts.list()
-//         .then((response) => {
-//           console.log('Google Analytics request successful!')
-//           if (response.result.items && response.result.items.length) {
-//             const accountNames = response.result.items.map(account => account.name)
-//             alert('Google Analytics account names: ' + accountNames.join(' '))
-//           }
-//         })
-//     } else {
-//       console.log('gapi: user is not signed in')
-//     }
-//   }
+    // Try to make a request to Google Analytics!
+    // gapi.client.analytics.management.accounts.list()
+    //   .then((response) => {
+    //     console.log('Google Analytics request successful!')
+    //     if (response.result.items && response.result.items.length) {
+    //       const accountNames = response.result.items.map(account => account.name)
+    //       alert('Google Analytics account names: ' + accountNames.join(' '))
+    //     }
+    //   })
+  } else {
+    console.log('gapi: user is not signed in')
+  }
+}
 
-//   new Promise((resolve, reject) => {
-//     gapi.load('client:auth2', () => {
-//       resolve()
-//     })
-//   })
-//   .then(() => { console.log('gapi: client:auth2 loaded', gapi.client) })
-//   .then(() => {
-//     return gapi.client.init({
-//       apiKey: firebaseConfig.apiKey,
-//       clientId: CLIENT_ID,
-//       scope: AUTH_SCOPES.join(" "),
-//     });
-//   })
-//   .then(() => {
-//     const auth2 = gapi.auth2.getAuthInstance()
-//     auth2.isSignedIn.listen(handleIsSignedIn)
-//     handleIsSignedIn(auth2.isSignedIn.get())
-//     document.querySelector('#sign_in')
-//       .addEventListener('click', function handleSignIn() {
-//         const auth2 = gapi.auth2.getAuthInstance()
-//         if (auth2.isSignedIn.get()) {
-//           alert('already signed in')
-//           return
-//         }
+new Promise((resolve, reject) => {
+  gapi.load('client:auth2', () => {
+    resolve()
+  })
+})
+  .then(() => { console.log('gapi: client:auth2 loaded', gapi.client) })
+  .then(() => {
+    return gapi.client.init({
+      apiKey: FIREBASE_CONFIG.apiKey,
+      clientId: CLIENT_ID,
+      scope: AUTH_SCOPES.join(' '),
+    })
+  })
+  // .then(() => { console.log('gapi: client initialized') })
+  // .then(() => { return gapi.client.load('analytics', 'v3') })
+  // .then(() => { console.log('gapi: analytics v3 loaded', gapi.client.analytics) })
+  .then(() => {
+    const auth2 = gapi.auth2.getAuthInstance()
+    auth2.isSignedIn.listen(handleIsSignedIn)
+    handleIsSignedIn(auth2.isSignedIn.get())
 
-//         auth2.signIn()
-//           .catch(error => { alert(`sign in error: ${error}`) })
-//       })
-//     document.querySelector('#sign_out')
-//       .addEventListener('click', function handleSignOut() {
-//         console.log('signing out...')
-//         const auth2 = gapi.auth2.getAuthInstance()
-//         if (!auth2.isSignedIn.get()) {
-//           alert('Not signed in!')
-//           return
-//         }
 
-//         auth2.signOut()
-//           .then(() => { console.log('gapi: sign out complete') })
-//           .then(() => { return fb.auth().signOut() })
-//           .then(() => { console.log('firebase: sign out complete') })
+  })
 
-//       })
-//   })
 
 new Vue({
   vuetify,

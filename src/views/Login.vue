@@ -2,7 +2,6 @@
   <div class="text-xs-center">
     <v-overlay>
       <v-card>
-        <v-card-media src="src" height="200px"> </v-card-media>
         <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">Login!</h3>
@@ -10,7 +9,7 @@
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn dark fab @click="loginButtonPressed()"
+          <v-btn dark fab @click="handleSignIn()"
             ><v-icon>mdi-google</v-icon></v-btn
           >
         </v-card-actions>
@@ -23,6 +22,18 @@
 import firebase from "firebase";
 export default {
   methods: {
+    handleSignIn() {
+      const auth2 = gapi.auth2.getAuthInstance();
+      if (auth2.isSignedIn.get()) {
+        this.$router.push('/')
+        return;
+      }
+
+      auth2.signIn().catch((error) => {
+        alert(`sign in error: ${error}`);
+      });
+    },
+
     async loginButtonPressed() {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("https://www.googleapis.com/auth/drive");

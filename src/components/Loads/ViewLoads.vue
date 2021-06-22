@@ -4,20 +4,15 @@
     <v-col cols="2"
       ><v-navigation-drawer right width="16.6vw">
         <v-card v-if="selectedLoad" elevation="0">
-          <v-card-subtitle>{{
-            selectedLoad.origin.location.formatted_address
-          }}</v-card-subtitle>
 
-          <v-card-subtitle>{{
-            selectedLoad.destination.location.formatted_address
-          }}</v-card-subtitle>
-          <v-card-subtitle>
+               <Address :load="selectedLoad.origin" title="Pickup" />
+              <Address :load="selectedLoad.destination" title="Delivery" />
+
             <div class="headline">
               {{ (selectedLoad.route.summary.distance / 1609).toFixed(2) }}
               miles
             </div>
             <span>{{ setTime() }} </span>
-          </v-card-subtitle>
 
           <v-card-actions>
             <v-btn
@@ -42,9 +37,6 @@
             >
             <v-spacer></v-spacer>
           </v-card-actions>
-          <!-- <v-slide-y-transition>
-            <v-card-text v-show="show"> hidden text </v-card-text>
-          </v-slide-y-transition> -->
         </v-card>
         <v-card v-else class="pa-1">
           <v-card-title>Select Load Below </v-card-title>
@@ -88,9 +80,11 @@
 <script>
 import firebase from "firebase";
 import Map from "../Map.vue";
+import Address from '../Global/Address.vue'
 export default {
   components: {
     Map,
+    Address,
   },
   created() {
     this.getLoads();

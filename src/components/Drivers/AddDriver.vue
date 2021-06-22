@@ -284,12 +284,7 @@ export default {
       valid: true,
       form: {
         nameRules: [(v) => !!v || "Name is required"],
-        emailRules: [
-          (v) => !!v || "E-mail is required",
-          (v) =>
-            /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/.test(v) ||
-            "E-mail must be valid",
-        ],
+
       },
       driver: {
         license: {
@@ -352,14 +347,15 @@ export default {
       this.driver.address.format = p.formatted_address;
       this.driver.address.comp = e;
     },
-    submit() {
+    async submit() {
       try {
-        firebase
+        const driDoc = firebase
           .firestore()
           .collection("users")
           .doc(firebase.auth().currentUser.uid)
-          .collection("drivers")
-          .add(this.driver);
+          .collection("drivers").doc()
+          this.driver.id= driDoc.id
+          await driDoc.set(this.driver);
       } catch (error) {
         console.log(error);
       }

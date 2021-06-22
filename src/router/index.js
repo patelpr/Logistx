@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import firebase from "firebase";
+
 Vue.use(Router);
 
 let router = new Router({
@@ -14,6 +15,15 @@ let router = new Router({
         requiresAuth: true,
       },
     },
+    {
+      path: "/account",
+      name: "Account",
+      component: () => import("../views/Account"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    
 
     {
       path: "/login",
@@ -82,7 +92,7 @@ let router = new Router({
     },
     {
       path: "/equipments",
-      name: "Equipment",
+      name: "Equipments",
       component: () => import("../components/Equipments/ViewEquipments"),
       meta: {
         requiresAuth: true,
@@ -109,7 +119,7 @@ let router = new Router({
 });
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  if (requiresAuth && !(await firebase.getCurrentUser())) {
+  if (requiresAuth && !(await gapi.auth2.isSignedIn.get())) {
     next("login");
   } else {
     next();

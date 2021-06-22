@@ -13,6 +13,7 @@
               name: 'Equipment',
               params: { id: equip.equipment_id, equipment: equip },
             }"
+            @click="console(equip)"
             ><v-icon>mdi-pencil</v-icon></v-btn
           >
         </v-card-actions>
@@ -28,6 +29,9 @@ export default {
     this.getEquipments();
   },
   methods: {
+    console(x){
+      console.log(x)
+    },
     async getEquipments() {
       this.equipments = [];
       try {

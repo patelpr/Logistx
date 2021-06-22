@@ -2,7 +2,7 @@
   <v-stepper v-model="e1" non-linear elevation="0" :key="reRender">
     <v-stepper-header>
       <v-stepper-step :complete="e1 > 1" step="1" editable>
-        Equpiment Type
+        Equipment Type
       </v-stepper-step>
 
       <v-divider></v-divider>

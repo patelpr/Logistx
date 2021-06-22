@@ -1,49 +1,25 @@
 <template>
-  <v-card>
-    <v-toolbar flat color="primary" dark>
+  <v-sheet>
+    <v-row>
+    <v-toolbar flat color="secondary" dark >
       <v-toolbar-title
-        >EQUIPMENT
+        >TRUCK
         {{
-          selectedEquipment.createdAt || "No Equipment Selected"
+          selectedEquipment["Model Year"] +
+          " " +
+          selectedEquipment["Make"] +
+          " " +
+          selectedEquipment["Model"]
         }}</v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <v-btn text icon @click="archiveEquipment(selectedEquipment.id)"
+      <v-btn text icon @click="archiveEquipment(selectedEquipment.equipment_id)"
         ><v-icon>mdi-archive</v-icon></v-btn
       >
-      <a target="_blank" :href="link()">
-        <v-btn text icon><v-icon>mdi-navigation-outline</v-icon></v-btn></a
-      >
     </v-toolbar>
-    <v-tabs>
-      <v-tab-item>
-        <v-card flat elevation="0">
-          <v-row>
-            <v-col cols="12" md="6" align="start"> </v-col>
-            <v-col cols="12" md="6"> </v-col>
-          </v-row>
-        </v-card>
-      </v-tab-item>
-      <v-tab-item>
-        <v-card flat> </v-card>
-      </v-tab-item>
-      <v-tab-item>
-        <v-card flat> </v-card>
-      </v-tab-item>
-      <v-tab>
-        <v-icon left> mdi-dolly </v-icon>
-        EQUIPMENT INFO
-      </v-tab>
-      <v-tab>
-        <v-icon left> mdi-steering </v-icon>
-        Driver/Equipment
-      </v-tab>
-      <v-tab>
-        <v-icon left> mdi-currency-usd </v-icon>
-        Costs
-      </v-tab>
-    </v-tabs>
-  </v-card>
+    </v-row>
+    
+  </v-sheet>
 </template>
 
 <script>
@@ -64,12 +40,11 @@ export default {
     },
   },
   created() {
-    !this.selectedEquipment && this.getEquipments();
+    !this.selectedEquipment
+      ? this.getEquipments()
+      : (this.selectedEquipment = this.equipment);
   },
   methods: {
-    link() {
-      return `https://www.google.com/maps/dir/${this.selectedEquipment.origin.location.formatted_address}/${this.selectedEquipment.destination.location.formatted_address}/`;
-    },
     async getEquipments() {
       try {
         await firebase

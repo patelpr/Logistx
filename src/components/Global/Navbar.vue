@@ -6,16 +6,20 @@
     app
     permanent
     absolute
+    z-index="1"
     left
   >
     <v-list nav>
-      <v-avatar
-        class="d-block text-center mx-auto mt-4"
-        color="white darken-1"
-        size="36"
-        :to="{name:'Account'}"
-
-      ></v-avatar>
+      <router-link :to="{ name: 'Account' }">
+        <v-avatar
+          class="d-block text-center mx-auto mt-4"
+          color="white darken-1"
+          size="36"
+        >
+          <img v-if="profile.image" :src="profile.image" />
+          <span v-else class="black--text text-h5">PP</span></v-avatar
+        >
+      </router-link>
 
       <v-divider class="mx-3 my-5"></v-divider>
 
@@ -38,8 +42,10 @@
 </template>
 
 <script>
+
 export default {
   data: () => ({
+    profile: {},
     links: [
       {
         name: "Equipments",
@@ -58,17 +64,32 @@ export default {
       },
     ],
   }),
+  created() {
+    const auth2 = gapi.auth2.getAuthInstance();
+    const currentUser = auth2.currentUser.get();
+    this.profile = currentUser.getBasicProfile();
+
+    this.profile.image = profile.getImageUrl();
+  },
   methods: {
     signout() {
-      firebase
-        .auth()
+      console.log("signing out...");
+      const auth2 = gapi.auth2.getAuthInstance();
+      if (!auth2.isSignedIn.get()) {
+        alert("Not signed in!");
+        return;
+      }
+
+      auth2
         .signOut()
         .then(() => {
-          this.$router.push("/login");
+          console.log("gapi: sign out complete");
         })
-        .catch((error) => {
-          // An error happened.
-          console.error(error);
+        .then(() => {
+          return fb.auth().signOut();
+        })
+        .then(() => {
+          console.log("firebase: sign out complete");
         });
     },
   },
