@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-model="l1" non-linear>
+  <v-stepper v-model="l1" non-linear :key="reRender">
     <v-stepper-header>
       <v-stepper-step :complete="l1 > 1" step="1" editable>
         Origin
@@ -30,8 +30,7 @@
               classname="search-location"
               placeholder="Start typing Address"
               :country="['us']"
-              v-on:placechanged="setOrigin"
-              required
+              v-on:placechanged="setOrigin()"
               width="100%"
             >
             </vue-google-autocomplete>
@@ -54,7 +53,6 @@
               <v-text-field
                 name="PickupRef"
                 label="Pick Up Reference"
-                value=""
                 v-model="load.origin.ref"
                 single-line
               ></v-text-field>
@@ -78,8 +76,7 @@
               classname="search-location"
               placeholder="Start typing Address"
               :country="['us']"
-              required
-              v-on:placechanged="setDestination"
+              v-on:placechanged="setDestination()"
             >
             </vue-google-autocomplete>
           </v-row>
@@ -92,14 +89,12 @@
                 name="delivery-time"
                 v-model="load.destination.time"
                 :minDate="Date.now()"
-                required
               />
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 name="PickupRef"
                 label="Pick Up Reference"
-                value=""
                 v-model="load.destination.ref"
                 single-line
               ></v-text-field>
@@ -212,15 +207,6 @@
               <v-btn class="ma-2" @click="l1 = 2">EDIT DELIVERY</v-btn>
             </v-col>
           </v-row>
-          <v-row>
-            <!-- <v-file-input
-              truncate-length="15"
-              chips
-              multiple
-              v-model="load.ratecon"
-              label="Rate Con File Upload"
-            ></v-file-input> -->
-          </v-row>
         </v-card>
 
         <v-btn color="primary" @click="saveRoute()"> Book Load </v-btn>
@@ -246,15 +232,13 @@ export default {
           "E-mail must be valid",
       ],
       valid: true,
-      route: {
-        summary: {},
-      },
+      reRender: 0,
+
       load: {
         num: null,
         weight: null,
-        driver: {
-          name: null,
-          number: null,
+        route: {
+          summary: {},
         },
         rate: null,
         type: null,
@@ -324,35 +308,12 @@ export default {
             break;
         }
       }
-      // console.log(address_comp);
+      console.log(address_comp);
+
       return address_comp;
     },
     clear() {
-      console.log(this.load);
-      this.load = {
-        weight: null,
-        rate: "",
-        type: "",
-        tracking: false,
-        active: true,
-
-        contact: {
-          name: "",
-          email: "",
-          number: "",
-        },
-        origin: {
-          location: {},
-          time: "",
-          ref: "",
-        },
-
-        destination: {
-          location: {},
-          time: "",
-          ref: "",
-        },
-      };
+      this.reRender++;
     },
     async saveRoute() {
       try {

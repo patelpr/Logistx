@@ -42,9 +42,9 @@ export default {
   data: () => ({
     links: [
       {
-        name: "Equipment",
+        name: "Equipments",
         icon: "mdi-truck-outline",
-        url: "/equipment",
+        url: "/equipments",
       },
       {
         name: "Loads",

@@ -7,8 +7,6 @@ import { VueMaskDirective } from "v-mask";
 import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-// import { loadGapiInsideDOM } from 'gapi-script';
-// const gapi = await loadGapiInsideDOM();
 
 Vue.use(Vue2Leaflet);
 Vue.use(L);
@@ -35,7 +33,6 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 firebase.getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {

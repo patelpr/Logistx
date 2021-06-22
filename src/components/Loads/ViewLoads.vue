@@ -87,7 +87,7 @@
 
 <script>
 import firebase from "firebase";
-import Map from "../components/Map.vue";
+import Map from "../Map.vue";
 export default {
   components: {
     Map,

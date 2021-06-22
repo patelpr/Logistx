@@ -1,6 +1,4 @@
 <template>
-  <v-main>
-    <v-container>
       <v-row>
         <v-col v-for="n in drivers" :key="n" cols="4">
           <v-layout row wrap>
@@ -28,8 +26,6 @@
           </v-layout>
         </v-col>
       </v-row>
-    </v-container>
-  </v-main>
 </template>
 
 <script>

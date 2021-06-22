@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-model="e1" non-linear elevation="0">
+  <v-stepper v-model="e1" non-linear elevation="0" :key="reRender">
     <v-stepper-header>
       <v-stepper-step :complete="e1 > 1" step="1" editable>
         Equpiment Type
@@ -16,9 +16,7 @@
     <v-stepper-items>
       <v-stepper-content step="1">
         <v-card class="mb-12 pa-12" elevation="0">
-          <v-row>
-            <h3>Equpiment VIN</h3>
-          </v-row>
+          <v-card-title>Equpiment VIN</v-card-title>
           <v-row>
             <v-text-field
               v-model="equipment.vin"
@@ -35,7 +33,7 @@
       <v-stepper-content step="2">
         <v-card class="mb-12 pa-12 ">
           <v-row>
-            <h4>
+            <v-card-title>
               {{
                 equipment["Model Year"] +
                   " " +
@@ -43,7 +41,7 @@
                   " " +
                   equipment["Model"]
               }}
-            </h4>
+            </v-card-title>
           </v-row>
 
           <v-row d-flex align-content-space-around flex-wrap>
@@ -79,7 +77,9 @@ export default {
   data() {
     return {
       e1: 1,
+      reRender: 0,
       equipment: {
+        active: true,
         vin: "",
       },
     };
@@ -93,7 +93,6 @@ export default {
           )
           .then((res) => {
             let obj = {};
-            console.log(res.data);
             res.data.Results.filter(
               (x) =>
                 x.Value != null && x.Value != "" && x.Value != "Not Applicable"
@@ -108,20 +107,22 @@ export default {
       }
     },
     async equipmentSubmit() {
+      let docRef = fire
+        .firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("equipments")
+        .doc();
       try {
-        let docRef = firebase
-          .firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("equipments")
-          .doc();
-
+        console.log(docRef);
         this.equipment.equipment_id = docRef.id;
+        console.log(this.equipment);
         await docRef.set(this.equipment);
       } catch (error) {
         console.log(error);
       } finally {
-        this.equipment = { vin: null };
+        this.reRender++;
+
         this.$router.push("/equipments");
       }
     },

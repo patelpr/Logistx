@@ -70,7 +70,7 @@ export default {
     },
   },
   created() {
-    this.getLoads();
+    !this.selectedLoad && this.getLoads();
   },
   methods: {
     link() {

@@ -9,7 +9,7 @@ let router = new Router({
     {
       path: "/",
       name: "Home",
-      component: () => import("@/views/Dash"),
+      component: () => import("../views/Dash"),
       meta: {
         requiresAuth: true,
       },
@@ -18,13 +18,12 @@ let router = new Router({
     {
       path: "/login",
       name: "Login",
-      component: () => import("@/views/Login"),
+      component: () => import("../views/Login"),
     },
-    //Loads
     {
       path: "/loads",
       name: "loads",
-      component: () => import("@/views/Loads"),
+      component: () => import("../components/Loads/ViewLoads"),
       meta: {
         requiresAuth: true,
       },
@@ -32,7 +31,7 @@ let router = new Router({
     {
       path: "/load/:id",
       name: "Load",
-      component: () => import("@/components/Loads/Load"),
+      component: () => import("@/components/Loads/SingleLoad"),
       props: true,
       meta: {
         requiresAuth: true,
@@ -42,7 +41,7 @@ let router = new Router({
     {
       path: "/loads/add",
       name: "Add Loads",
-      component: () => import("@/components/Loads/AddLoads.vue"),
+      component: () => import("../components/Loads/AddLoads"),
       meta: {
         requiresAuth: true,
       },
@@ -51,7 +50,7 @@ let router = new Router({
     {
       path: "/drivers",
       name: "Drivers",
-      component: () => import("@/views/Drivers"),
+      component: () => import("../components/Drivers/ViewDrivers"),
       meta: {
         requiresAuth: true,
       },
@@ -59,7 +58,7 @@ let router = new Router({
     {
       path: "/driver/:id",
       name: "Driver",
-      component: () => import("@/components/Drivers/Driver"),
+      component: () => import("../components/Drivers/SingleDriver"),
       props: true,
       meta: {
         requiresAuth: true,
@@ -68,7 +67,7 @@ let router = new Router({
     {
       path: "/drivers/add",
       name: "Add Drivers",
-      component: () => import("../components/Drivers/AddDriver.vue"),
+      component: () => import("../components/Drivers/AddDriver"),
       meta: {
         requiresAuth: true,
       },
@@ -76,7 +75,7 @@ let router = new Router({
     {
       path: "drivers/application",
       name: "Drivers Application",
-      component: () => import("@/components/Drivers/DriverApp.vue"),
+      component: () => import("../components/Drivers/DriverApplication"),
       meta: {
         requiresAuth: true,
       },
@@ -84,7 +83,7 @@ let router = new Router({
     {
       path: "/equipments",
       name: "Equipment",
-      component: () => import("@/views/Equipments"),
+      component: () => import("../components/Equipments/ViewEquipments"),
       meta: {
         requiresAuth: true,
       },
@@ -92,7 +91,7 @@ let router = new Router({
     {
       path: "/Equipment/:id",
       name: "Equipment",
-      component: () => import("@/components/Equipments/Equipment"),
+      component: () => import("../components/Equipments/SingleEquipment"),
       props: true,
       meta: {
         requiresAuth: true,
@@ -101,7 +100,7 @@ let router = new Router({
     {
       path: "/equipments/add",
       name: "Add Equipments",
-      component: () => import("@/components/Equipments/AddEquipment.vue"),
+      component: () => import("../components/Equipments/AddEquipment"),
       meta: {
         requiresAuth: true,
       },
