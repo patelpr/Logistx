@@ -119,7 +119,7 @@ let router = new Router({
 });
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  if (requiresAuth && !(await gapi.auth2.isSignedIn.get())) {
+  if (requiresAuth && !(await firebase.auth().currentUser)) {
     next("login");
   } else {
     next();

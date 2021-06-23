@@ -99,7 +99,7 @@ export default {
             ).map((x) => {
               obj[x.Variable] = x.Value;
             });
-            this.equipment = obj;
+            this.equipment.vinData = obj;
             this.e1++;
           });
       } catch (error) {

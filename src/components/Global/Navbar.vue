@@ -5,7 +5,8 @@
     expand-on-hover
     app
     permanent
-    absolute
+    fixed
+    floating
     z-index="1"
     left
   >
@@ -65,11 +66,11 @@ export default {
     ],
   }),
   created() {
-    const auth2 = gapi.auth2.getAuthInstance();
-    const currentUser = auth2.currentUser.get();
-    this.profile = currentUser.getBasicProfile();
+    // const auth2 = gapi.auth2.getAuthInstance();
+    // const currentUser = auth2.currentUser.get();
+    // this.profile = currentUser.getBasicProfile();
 
-    this.profile.image = profile.getImageUrl();
+    // this.profile.image = profile.getImageUrl();
   },
   methods: {
     signout() {

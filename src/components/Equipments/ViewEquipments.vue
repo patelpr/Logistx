@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row d-flex align-content-space-around class="mx-auto">
     <v-col v-for="equip in equipments" :key="equip.equipment_id" cols="4">
       <v-card>
         <v-card-title>
@@ -52,19 +52,19 @@ export default {
         console.error("Error getting documents: ", error);
       }
     },
-    // archiveEquipment(id) {
-    //   try {
-    //     firebase
-    //       .firestore()
-    //       .collection("users")
-    //       .doc(firebase.auth().currentUser.uid)
-    //       .collection("equipments")
-    //       .doc(id)
-    //       .update({ active: false });
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
+    archiveEquipment(id) {
+      try {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("equipments")
+          .doc(id)
+          .update({ active: false });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   data() {
     return {
