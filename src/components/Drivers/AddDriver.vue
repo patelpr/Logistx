@@ -198,77 +198,6 @@
             Add Driver
           </v-btn>
         </v-stepper-content>
-        <!-- 
-        <v-stepper-content step="3">
-          <v-card class="mb-12 pa-12">
-            <v-card
-              v-for="(h, i) in driver.work.history"
-              :key="i"
-              class="pa-10 ma-5"
-            >
-              <v-row>
-                <v-text-field
-                  name="company"
-                  v-model="driver.work.history[i].company"
-                  label="Company"
-                  single-line
-                  ><v-icon slot="prepend">
-                    mdi-domain
-                  </v-icon></v-text-field
-                ></v-row
-              >
-              <v-row>
-                <v-text-field
-                  name="start"
-                  v-model="driver.work.history[i].start"
-                  v-mask="'##/##/####'"
-                  label="Start"
-                  messages="mm/dd/yyyy"
-                  single-line
-                  ><v-icon slot="prepend">
-                    mdi-calendar-range
-                  </v-icon></v-text-field
-                ></v-row
-              >
-              <v-row>
-                <v-text-field
-                  name="finish"
-                  v-model="driver.work.history[i].finish"
-                  label="Finish"
-                  v-mask="'##/##/####'"
-                  messages="mm/dd/yyyy"
-                  single-line
-                  ><v-icon slot="prepend">
-                    mdi-calendar-range
-                  </v-icon></v-text-field
-                ></v-row
-              >
-              <v-row>
-                <v-text-field
-                  name="reason"
-                  v-model="driver.work.history[i].reason"
-                  label="Reason for leaving"
-                  single-line
-                  ><v-icon slot="prepend">
-                    mdi-text-box
-                  </v-icon></v-text-field
-                >
-              </v-row>
-            </v-card>
-
-            <v-row class="mb-12 pa-12"
-              ><v-btn @click="addEmployment">Add Employee</v-btn></v-row
-            >
-          </v-card>
-
-          <v-btn color="primary" type="submit" @click="submit()">
-            Submit
-          </v-btn>
-
-          <v-btn text>
-            Cancel
-          </v-btn>
-        </v-stepper-content> -->
       </v-stepper-items>
     </v-form>
   </v-stepper>
@@ -284,7 +213,6 @@ export default {
       valid: true,
       form: {
         nameRules: [(v) => !!v || "Name is required"],
-
       },
       driver: {
         license: {
@@ -314,16 +242,7 @@ export default {
           drug: null,
           drug_url: null,
         },
-        // work: {
-        // history: [
-        //   {
-        //     company: null,
-        //     start: null,
-        //     finish: null,
-        //     reason: null,
-        //   },
-        // ],
-        // },
+
         company_id: null,
       },
     };
@@ -333,35 +252,35 @@ export default {
   },
 
   methods: {
-    // addEmployment() {
-    //   let add = {
-    //     company: null,
-    //     start: null,
-    //     finish: null,
-    //     reason: null,
-    //   };
-    //   this.driver.work.history.push(add);
-    //   console.log(this.driver.work.history);
-    // },
     setPlace(e, p, i) {
       this.driver.address.format = p.formatted_address;
       this.driver.address.comp = e;
     },
     async submit() {
+      let driversGlobalId = "";
+      try {
+        const driver = firebase
+          .firestore()
+          .collection("drivers")
+          .doc();
+        this.driver.id = driver.id;
+        driversGlobalId = driver.id;
+        await driver.set(this.driver);
+      } catch (error) {
+        console.log(error);
+      }
+
       try {
         const driDoc = firebase
           .firestore()
           .collection("users")
           .doc(firebase.auth().currentUser.uid)
-          .collection("drivers").doc()
-          this.driver.id= driDoc.id
-          await driDoc.set(this.driver);
+          .collection("drivers")
+          .doc(driversGlobalId);
+        await driDoc.set(this.driver);
       } catch (error) {
         console.log(error);
       }
-    },
-    clear() {
-      this.$refs.form.reset();
     },
   },
 };
