@@ -17,7 +17,7 @@
           selectedLoad.destination.location.longitude,
         ],
       ]"
-      style="height: 100vh"
+      style="height: 100vh; z-index:0;"
     >
       <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>

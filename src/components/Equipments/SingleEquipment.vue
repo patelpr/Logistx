@@ -1,7 +1,7 @@
 <template>
   <v-sheet >
     <v-row>
-      <v-toolbar v-if="selectedEquipment" flat color="secondary" dark class="pa-1">
+      <v-toolbar v-if="selectedEquipment" flat color="secondary" dark class="pl-3 pr-3">
         <v-toolbar-title
           >TRUCK
           {{

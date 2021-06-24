@@ -1,13 +1,13 @@
 <template>
   <v-navigation-drawer
-    color="primary"
+    color="secondary"
     dark
     expand-on-hover
     app
     permanent
     fixed
-    floating
     z-index="1"
+    bottom
     left
   >
     <v-list nav>
@@ -32,7 +32,7 @@
       </v-list-item>
 
       <v-divider class="mx-3 my-5"></v-divider>
-      <v-list-item link @click="signout()">
+      <v-list-item v-if="user" link @click="signout()">
         <v-list-item-icon>
           <v-icon>mdi-exit-to-app</v-icon>
         </v-list-item-icon>
@@ -43,10 +43,12 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 
 export default {
   data: () => ({
     profile: {},
+    uid:null,
     links: [
       {
         name: "Equipments",
@@ -66,11 +68,9 @@ export default {
     ],
   }),
   created() {
-    // const auth2 = gapi.auth2.getAuthInstance();
-    // const currentUser = auth2.currentUser.get();
-    // this.profile = currentUser.getBasicProfile();
 
-    // this.profile.image = profile.getImageUrl();
+this.user=firebase.currentUser
+
   },
   methods: {
     signout() {
