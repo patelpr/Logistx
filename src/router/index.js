@@ -121,12 +121,9 @@ let router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  console.log("pre", firebase.currentUser)
-  if (requiresAuth && !(await firebase.currentUser)) {
-    console.log("auth fail", firebase.currentUser)
+  if (requiresAuth && !(await firebase.auth().currentUser.uid)) {
     next("login");
   } else {
-    console.log("auth success", firebase.currentUser)
     next();
   }
 });

@@ -38,17 +38,23 @@
         </v-list-item-icon>
         <v-list-item-title>Logout</v-list-item-title>
       </v-list-item>
+      <v-list-item v-else link to="/login">
+        <v-list-item-icon>
+          <v-icon>mdi-door</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>Logout</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from "firebase";
 
 export default {
   data: () => ({
     profile: {},
-    uid:null,
+    uid: null,
     links: [
       {
         name: "Equipments",
@@ -68,9 +74,7 @@ export default {
     ],
   }),
   created() {
-
-this.user=firebase.currentUser
-
+    this.user = firebase.auth().currentUser.uid;
   },
   methods: {
     signout() {
