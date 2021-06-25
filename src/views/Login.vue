@@ -5,13 +5,11 @@
         <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">Login!</h3>
-            <div>You must be logged in to proceed.</div>
+            <div>You must be logged in to proceed. Hover over the Navigation bar to the left!</div>
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn dark fab @click="handleSignIn()"
-            ><v-icon>mdi-google</v-icon></v-btn
-          >
+          
         </v-card-actions>
       </v-card>
     </v-overlay>
@@ -21,60 +19,8 @@
 <script>
 import firebase from "firebase";
 export default {
-  methods: {
-    handleSignIn() {
-      const auth2 = gapi.auth2.getAuthInstance();
-      if (auth2.isSignedIn.get()) {
-        this.$router.push('/')
-        return;
-      }
+ 
 
-      auth2.signIn().catch((error) => {
-        alert(`sign in error: ${error}`);
-      });
-    },
-
-    async loginButtonPressed() {
-      var provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope("https://www.googleapis.com/auth/drive");
-      provider.addScope("https://www.googleapis.com/auth/user.emails.read");
-      provider.addScope(
-        "https://www.googleapis.com/auth/user.organization.read"
-      );
-      provider.addScope(
-        "https://www.googleapis.com/auth/user.phonenumbers.read"
-      );
-      provider.addScope("https://www.googleapis.com/auth/userinfo.email");
-      provider.addScope("https://www.googleapis.com/auth/userinfo.profile");
-      //  provider.setCustomParameters({
-      //    prompt: "select_account",
-      //});
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-          /** @type {firebase.auth.OAuthCredential} */
-          var credential = result.credential;
-
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          var token = credential.accessToken;
-          // The signed-in user info.
-          var user = result.user;
-          // ...
-          this.$router.push("/");
-        })
-        .catch((error) => {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
-          // ...
-        });
-    },
-  },
 };
 </script>
 

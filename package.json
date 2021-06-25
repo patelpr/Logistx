@@ -17,6 +17,7 @@
     "leaflet-routing-machine": "^3.2.12",
     "v-mask": "^2.2.4",
     "vue": "^2.6.11",
+    "vue-gapi": "^1.1.0",
     "vue-google-autocomplete": "^1.1.1",
     "vue-router": "^3.2.0",
     "vue2-leaflet": "^2.7.0",

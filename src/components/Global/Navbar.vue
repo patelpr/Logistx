@@ -17,7 +17,7 @@
           color="white darken-1"
           size="36"
         >
-          <img v-if="profile.image" :src="profile.image" />
+          <img v-if="false" />
           <span v-else class="black--text text-h5">PP</span></v-avatar
         >
       </router-link>
@@ -32,29 +32,17 @@
       </v-list-item>
 
       <v-divider class="mx-3 my-5"></v-divider>
-      <v-list-item v-if="user" link @click="signout()">
-        <v-list-item-icon>
-          <v-icon>mdi-exit-to-app</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>Logout</v-list-item-title>
-      </v-list-item>
-      <v-list-item v-else link to="/login">
-        <v-list-item-icon>
-          <v-icon>mdi-door</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>Logout</v-list-item-title>
-      </v-list-item>
+      <Login />
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
+import Login from "../Global/Login.vue";
 import firebase from "firebase";
 
 export default {
   data: () => ({
-    profile: {},
-    uid: null,
     links: [
       {
         name: "Equipments",
@@ -73,30 +61,8 @@ export default {
       },
     ],
   }),
-  created() {
-    this.user = firebase.auth().currentUser.uid;
-  },
-  methods: {
-    signout() {
-      console.log("signing out...");
-      const auth2 = gapi.auth2.getAuthInstance();
-      if (!auth2.isSignedIn.get()) {
-        alert("Not signed in!");
-        return;
-      }
-
-      auth2
-        .signOut()
-        .then(() => {
-          console.log("gapi: sign out complete");
-        })
-        .then(() => {
-          return fb.auth().signOut();
-        })
-        .then(() => {
-          console.log("firebase: sign out complete");
-        });
-    },
+  components: {
+    Login,
   },
 };
 </script>

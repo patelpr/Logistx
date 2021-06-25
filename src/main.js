@@ -8,6 +8,89 @@ import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Vuex from 'vuex'
+import VueGapi from 'vue-gapi'
+
+const FB_CONFIG = {
+  apiKey: "AIzaSyDmuK9IeyTyM7824qRQYGgD51ldJTdAVgA",
+  authDomain: "progistics-app.firebaseapp.com",
+  projectId: "progistics-app",
+  storageBucket: "progistics-app.appspot.com",
+  messagingSenderId: "707547149273",
+  appId: "1:707547149273:web:b25fd6c5f38a936c8cdfc8",
+  measurementId: "G-JQ7HQD2359",
+  clientId: '707547149273-d365i9o81bal8m662k36otf145do6kfg.apps.googleusercontent.com',
+  scopes: [
+    'email',
+    'profile',
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/contacts",
+    'https://mail.google.com/',
+    'https://www.googleapis.com/auth/tasks'
+  ],
+  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v2/rest', 'https://tasks.googleapis.com/$discovery/rest?version=v1', 'https://people.googleapis.com/$discovery/rest?version=v1', 'https://gmail.googleapis.com/$discovery/rest?version=v1']
+
+  // 'https://www.googleapis.com/auth/calendar',
+
+  //'https://calendar-json.googleapis.com/$discovery/rest?version=v3',
+
+};
+export const fb = firebase.initializeApp(FB_CONFIG)
+
+function isUserEqual(googleUser, firebaseUser) {
+  if (firebaseUser) {
+    var providerData = firebaseUser.providerData;
+    for (var i = 0; i < providerData.length; i++) {
+      if (
+        providerData[i].providerId ===
+        fb.auth.GoogleAuthProvider.PROVIDER_ID &&
+        providerData[i].uid === googleUser.getBasicProfile().getId()
+      ) {
+        // We don't need to reauth the Firebase connection.
+        return true;
+      }
+    }
+  }
+  return false;
+}
+export function onSignIn(googleUser) {
+  // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+  var unsubscribe = fb.auth().onAuthStateChanged((firebaseUser) => {
+    unsubscribe();
+    // Check if we are already signed-in Firebase with the correct user.
+    if (!isUserEqual(googleUser, firebaseUser)) {
+      // Build Firebase credential with the Google ID token.
+      let credential = firebase.auth.GoogleAuthProvider.credential(googleUser.id_token)
+      // Sign in with credential from the Google user.
+      // [START auth_google_signin_credential]
+      firebase
+        .auth()
+        .signInWithCredential(credential)
+        .catch((error) => {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The fb.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+        });
+      console.log("user", fb.auth.currentUser);
+      // [END auth_google_signin_credential]
+    } else {
+      console.log("User already signed-in fb.");
+    }
+  });
+}
+
+
+
+Vue.use(VueGapi, {
+  apiKey: FB_CONFIG.apiKey,
+  clientId: FB_CONFIG.clientId,
+  discoveryDocs: FB_CONFIG.discoveryDocs,
+  scope: FB_CONFIG.scopes.join(' ')
+})
 
 
 Vue.use(Vuex)
@@ -33,113 +116,7 @@ Vue.config.productionTip = false;
 
 //Authentication for GAPI and Firebase
 //https://github.com/msukmanowsky/gapi-firebase
-const AUTH_SCOPES = [
-  'email',
-  'profile',
-  "https://mail.google.com/",
-  'https://www.googleapis.com/auth/analytics',
-  "https://www.googleapis.com/auth/cloud-platform",
-  "https://www.googleapis.com/auth/drive",
-  "https://www.googleapis.com/auth/contacts",
-]
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyA-QWdASbkugX3kJyi0lwDE8KfBb__O3dw",
-  authDomain: "logistixapps.firebaseapp.com",
-  projectId: "logistixapps",
-  storageBucket: "logistixapps.appspot.com",
-  messagingSenderId: "149781125117",
-  appId: "1:149781125117:web:9fc79ae3747e4cebc76b94",
-  measurementId: "G-83WEQPNMNM",
-};
-//Google Cloud Consol
-const CLIENT_ID = '643107230240-kmp029ie4ifh3vi9fkkahob36ov0kf9r.apps.googleusercontent.com'
 
-// Initialize Firebase
-const fb = firebase.initializeApp(FIREBASE_CONFIG)
-// export const db=fb.firestore().collection('users').doc(fb.auth().currentUser.uid)
-
-//intialize GAPI
-export async function  handleIsSignedIn(x) {
-  const auth2 = await gapi.auth2.getAuthInstance()
-  const isSignedIn = auth2.isSignedIn.get() || x
-  if (isSignedIn) {
-
-    
-    const currentUser = auth2.currentUser.get()
-    const profile = currentUser.getBasicProfile()
-
-    console.log('gapi: user signed in!', {
-      name: profile.getName(),
-      imageURL: profile.getImageUrl(),
-      email: profile.getEmail(),
-    })
-    const authResponse = currentUser.getAuthResponse(true)
-    
-    const credential = firebase.auth.GoogleAuthProvider.credential(
-      authResponse.id_token,
-      authResponse.access_token
-    )
-    // console.log(db)
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-      // Existing and future Auth states are now persisted in the current
-      // session only. Closing the window would clear any existing state even
-      // if a user forgets to sign out.
-      // ...
-      // New sign-in will be persisted with session persistence.
-      return firebase.auth().signInWithEmailAndPassword(email, password);
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-    });
-    fb.auth().signInWithCredential(credential)
-      .then(({ user }) => {
-        console.log('firebase: user signed in!', {
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-        })
-        console.log(fb.firestore().collection('users').doc(fb.auth().currentUser.uid))
-      })
-
-    // Try to make a request to Google Analytics!
-    // gapi.client.analytics.management.accounts.list()
-    //   .then((response) => {
-    //     console.log('Google Analytics request successful!')
-    //     if (response.result.items && response.result.items.length) {
-    //       const accountNames = response.result.items.map(account => account.name)
-    //       alert('Google Analytics account names: ' + accountNames.join(' '))
-    //     }
-    //   })
-  } else {
-    console.log('gapi: user is not signed in')
-  }
-}
-
-new Promise((resolve, reject) => {
-  gapi.load('client:auth2', () => {
-    resolve()
-  })
-})
-  .then(() => { console.log('gapi: client:auth2 loaded', gapi.client) })
-  .then(() => {
-    return gapi.client.init({
-      apiKey: FIREBASE_CONFIG.apiKey,
-      clientId: CLIENT_ID,
-      scope: AUTH_SCOPES.join(' '),
-    })
-  })
-  // .then(() => { console.log('gapi: client initialized') })
-  // .then(() => { return gapi.client.load('analytics', 'v3') })
-  // .then(() => { console.log('gapi: analytics v3 loaded', gapi.client.analytics) })
-  .then(() => {
-    const auth2 = gapi.auth2.getAuthInstance()
-    auth2.isSignedIn.listen(handleIsSignedIn)
-    handleIsSignedIn(auth2.isSignedIn.get())
-
-
-  })
 
 
 new Vue({

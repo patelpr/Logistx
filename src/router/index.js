@@ -23,14 +23,11 @@ let router = new Router({
         requiresAuth: true,
       },
     },
-
-
     {
       path: "/login",
       name: "Login",
       component: () => import("../views/Login"),
-    },
-    {
+    },{
       path: "/loads",
       name: "loads",
       component: () => import("../components/Loads/ViewLoads"),
@@ -119,12 +116,21 @@ let router = new Router({
 });
 
 
-router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  if (requiresAuth && !(await firebase.auth().currentUser.uid)) {
-    next("login");
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    router.app.$gapi.isSignedIn().then((isSignedIn) => {
+      if (isSignedIn) {
+        next()
+      } else {
+        console.log('You must be logged in to see this page')
+        next({
+          path: '/login',
+        })
+      }
+    })
   } else {
-    next();
+    next()
   }
-});
+})
+
 export default router;

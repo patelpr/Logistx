@@ -2,15 +2,11 @@
   <v-stepper v-model="e1" non-linear>
     <v-form v-model="valid" ref="form" lazy-validation>
       <v-stepper-header>
-        <v-stepper-step editable step="1">
-          Driver Details
-        </v-stepper-step>
+        <v-stepper-step editable step="1"> Driver Details </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step editable step="2">
-          License Details
-        </v-stepper-step>
+        <v-stepper-step editable step="2"> License Details </v-stepper-step>
         <!-- 
         <v-divider></v-divider>
 
@@ -32,9 +28,7 @@
                   :rules="form.nameRules"
                   single-line
                   required
-                  ><v-icon slot="prepend">
-                    mdi-account
-                  </v-icon></v-text-field
+                  ><v-icon slot="prepend"> mdi-account </v-icon></v-text-field
                 >
               </v-col>
               <v-col cols="12" md="4">
@@ -46,9 +40,7 @@
                   :rules="form.nameRules"
                   single-line
                   required
-                  ><v-icon slot="prepend">
-                    mdi-account
-                  </v-icon></v-text-field
+                  ><v-icon slot="prepend"> mdi-account </v-icon></v-text-field
                 >
               </v-col>
               <v-col cols="12" md="4">
@@ -60,9 +52,7 @@
                   v-model="driver.dob"
                   required
                 >
-                  <v-icon slot="prepend">
-                    mdi-cake
-                  </v-icon>
+                  <v-icon slot="prepend"> mdi-cake </v-icon>
                 </v-text-field>
               </v-col>
             </v-row>
@@ -76,9 +66,7 @@
                   :rules="form.emailRules"
                   single-line
                   required
-                  ><v-icon slot="prepend">
-                    mdi-at
-                  </v-icon></v-text-field
+                  ><v-icon slot="prepend"> mdi-at </v-icon></v-text-field
                 ></v-col
               >
               <v-col cols="12" md="4">
@@ -91,15 +79,13 @@
                   single-line
                   required
                 >
-                  <v-icon slot="prepend">
-                    mdi-phone
-                  </v-icon>
+                  <v-icon slot="prepend"> mdi-phone </v-icon>
                 </v-text-field></v-col
               ><v-col cols="12" md="4">
                 <v-text-field
                   name="driver_ssn"
                   label="Driver SSN"
-                  v-model="driver.ss"
+                  v-model="driver.ssn"
                   v-mask="'###-##-####'"
                   placeholder="Social Security Number"
                   single-line
@@ -119,7 +105,7 @@
                 <vue-google-autocomplete
                   id="employeeaddress"
                   class="pa-5"
-                  style="border:1px solid gray;"
+                  style="border: 1px solid gray"
                   placeholder="Driver Address"
                   classname="search-location"
                   :country="['us']"
@@ -132,9 +118,7 @@
             <v-row> </v-row>
           </v-card>
 
-          <v-btn color="primary" @click="e1 = 2">
-            Continue
-          </v-btn>
+          <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -153,9 +137,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field label="State Issued"
-                  ><v-icon slot="prepend">
-                    mdi-domain
-                  </v-icon>
+                  ><v-icon slot="prepend"> mdi-domain </v-icon>
                 </v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -164,9 +146,7 @@
                   label="Drivers License Issued"
                   v-model="driver.license.issued"
                   single-line
-                  ><v-icon slot="prepend">
-                    mdi-calendar
-                  </v-icon></v-text-field
+                  ><v-icon slot="prepend"> mdi-calendar </v-icon></v-text-field
                 >
               </v-col>
             </v-row>
@@ -175,9 +155,7 @@
                 <v-text-field
                   label="License Class"
                   v-model="driver.license.class"
-                  ><v-icon slot="prepend">
-                    mdi-card-account-details
-                  </v-icon>
+                  ><v-icon slot="prepend"> mdi-card-account-details </v-icon>
                 </v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -186,17 +164,13 @@
                   label="Drivers License Expiration"
                   v-model="driver.license.expiration"
                   single-line
-                  ><v-icon slot="prepend">
-                    mdi-update
-                  </v-icon></v-text-field
+                  ><v-icon slot="prepend"> mdi-update </v-icon></v-text-field
                 >
               </v-col>
             </v-row>
           </v-card>
 
-          <v-btn color="primary" @click="submit()">
-            Add Driver
-          </v-btn>
+          <v-btn color="primary" @click="submit()"> Add Driver </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-form>
@@ -215,34 +189,6 @@ export default {
         nameRules: [(v) => !!v || "Name is required"],
       },
       driver: {
-        license: {
-          number: null,
-          url: null,
-          class: null,
-          expiration: null,
-          state: null,
-          issued: null,
-        },
-
-        dob: null,
-        fName: "",
-        lName: "",
-
-        address: {
-          format: null,
-          comp: null,
-        },
-        email: "",
-        ssn: null,
-        check: {
-          background: null,
-          bg_url: null,
-          mvr: null,
-          mvr_url: null,
-          drug: null,
-          drug_url: null,
-        },
-
         company_id: null,
       },
     };
@@ -259,10 +205,7 @@ export default {
     async submit() {
       let driversGlobalId = "";
       try {
-        const driver = firebase
-          .firestore()
-          .collection("drivers")
-          .doc();
+        const driver = firebase.firestore().collection("drivers").doc();
         this.driver.id = driver.id;
         driversGlobalId = driver.id;
         await driver.set(this.driver);
