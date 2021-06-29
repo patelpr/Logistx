@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Navbar />
-    <v-content>
+    <v-main>
       <v-container fluid ma-0 pa-0 fill-height style="background-color:lightgray"
         ><v-row no-gutters align="start" justify="space-around">
           <router-view></router-view>
@@ -10,7 +10,7 @@
 
       </v-container>
 
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

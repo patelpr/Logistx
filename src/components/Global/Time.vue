@@ -25,8 +25,7 @@
       ampm-in-title
       v-model="time"
       full-width
-      @change="setTime"
-      @click:minute="menu2 = false"
+      @click:minute="$refs.menu.save(time)"
     ></v-time-picker>
   </v-menu>
 </template>
@@ -40,7 +39,7 @@ export default {
   },
   methods: {
     setTime(e) {
-      this.$emit("settime", this.time);
+      this.$emit("settime", e);
     },
   },
 };

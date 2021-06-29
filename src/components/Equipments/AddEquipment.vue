@@ -15,7 +15,7 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card class="mb-12 pa-12" elevation="0">
+        <v-card class="mb-5 pa-10" elevation="0">
           <v-card-title>Equpiment VIN</v-card-title>
           <v-row>
             <v-text-field
@@ -24,22 +24,22 @@
               label="Vin Number"
               single-line
               prepend-icon="mdi-truck-outline"
-              @blur="VINcheck()"
             ></v-text-field
           ></v-row>
         </v-card>
+        <v-btn color="primary" @click="VINcheck()"> Get Truck Details</v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card class="mb-12 pa-12 ">
+        <v-card class="mb-5 pa-10" v-if="equipment.vinData">
           <v-row>
             <v-card-title>
               {{
-                equipment["Model Year"] +
+                equipment.vinData["Model Year"] +
                   " " +
-                  equipment["Make"] +
+                  equipment.vinData["Make"] +
                   " " +
-                  equipment["Model"]
+                  equipment.vinData["Model"]
               }}
             </v-card-title>
           </v-row>
@@ -47,7 +47,7 @@
           <v-row d-flex align-content-space-around flex-wrap>
             <v-text-field
               class="ma-2"
-              v-for="(item, i) in Object.entries(equipment)"
+              v-for="(item, i) in Object.entries(equipment.vinData)"
               :key="i"
               single-line
               :label="item[0]"
@@ -57,7 +57,8 @@
               persistent-hint
               outlined
               dense
-              onkeypress="this.style.width = ((this.value.length + 1) * 8) + 'px';"
+              clearable
+              ondurationchange="this. style.width = ((this.value.length + 1) * 8) + 'px';"
               :v-model="equipment[item[0]]"
             ></v-text-field>
           </v-row>
@@ -93,6 +94,8 @@ export default {
           )
           .then((res) => {
             let obj = {};
+            console.log(res.data.Results);
+
             res.data.Results.filter(
               (x) =>
                 x.Value != null && x.Value != "" && x.Value != "Not Applicable"
@@ -105,12 +108,13 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(this.$gapi.clientProvider.client.authInstance.currentUser.getBasicProfile().getId());
     },
     async equipmentSubmit() {
-      let docRef = fire
+      let docRef = firebase
         .firestore()
         .collection("users")
-        .doc(firebase.auth().currentUser.uid)
+        .doc()
         .collection("equipments")
         .doc();
       try {

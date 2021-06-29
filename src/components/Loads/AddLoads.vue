@@ -18,87 +18,83 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card class="mb-12 pa-12" elevation="0">
-          <v-row>
+        <v-card class="mb-5 pa-10" elevation="0">
+          <v-row class="mb-4">
             <h3>Pick Up Information</h3>
           </v-row>
           <v-row>
-            <vue-google-autocomplete
-              id="origin"
-              class="pa-5"
-              style="border: 2px solid black"
-              classname="search-location"
-              placeholder="Start typing Address"
-              :country="['us']"
-              v-on:placechanged="setOrigin()"
-              width="100%"
-            >
-            </vue-google-autocomplete>
+            <AutoComplete v-on:place="setOrigin" />
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <input
-                class="pa-3"
-                style="border: 2px solid black"
-                type="datetime-local"
-                id="meeting-time"
-                name="pickuptime"
-                v-model="load.origin.time"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
-                :minDate="Date.now()"
-                required
+              <Date
+                v-on:setdate="
+                  (x) => {
+                    this.load.origin.date = x;
+                  }
+                "
               />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field
-                name="PickupRef"
-                label="Pick Up Reference"
-                v-model="load.origin.ref"
-                single-line
-              ></v-text-field>
+              <Time
+                v-on:settime="
+                  (x) => {
+                    this.load.origin.time = x;
+                  }
+                "
+              />
             </v-col>
           </v-row>
+          <v-row>
+            <v-text-field
+              name="PickupRef"
+              label="Pick Up Reference"
+              v-model="load.origin.ref"
+              prepend-icon="mdi-pound"
+              single-line
+            ></v-text-field
+          ></v-row>
         </v-card>
 
         <v-btn color="primary" @click="l1 = 2"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card class="mb-12 pa-12" elevation="0">
-          <v-row>
+        <v-card class="mb-5 pa-10" elevation="0">
+          <v-row class="mb-4">
             <h3>Delivery Information</h3>
           </v-row>
           <v-row>
-            <vue-google-autocomplete
-              id="destination"
-              class="pa-5"
-              style="border: 2px solid black"
-              classname="search-location"
-              placeholder="Start typing Address"
-              :country="['us']"
-              v-on:placechanged="setDestination()"
-            >
-            </vue-google-autocomplete>
+            <AutoComplete v-on:place="setDestination" />
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <input
-                type="datetime-local"
-                class="pa-3"
-                style="border: 2px solid black"
-                name="delivery-time"
-                v-model="load.destination.time"
-                :minDate="Date.now()"
+              <Date
+                v-on:setdate="
+                  (x) => {
+                    this.load.destination.date = x;
+                  }
+                "
               />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field
-                name="PickupRef"
-                label="Pick Up Reference"
-                v-model="load.destination.ref"
-                single-line
-              ></v-text-field>
+              <Time
+                v-on:settime="
+                  (x) => {
+                    this.load.destination.time = x;
+                  }
+                "
+              />
             </v-col>
+          </v-row>
+          <v-row>
+            <v-text-field
+              name="DeliverRef"
+              prepend-icon="mdi-pound"
+              label="Delivery Reference"
+              v-model="load.destination.ref"
+              single-line
+            ></v-text-field>
           </v-row>
         </v-card>
 
@@ -106,8 +102,8 @@
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-card class="mb-12 pa-12" elevation="0">
-          <v-row>
+        <v-card class="mb-5 pa-10" elevation="0">
+          <v-row class="mb-4">
             <h3>Additional Load Details</h3>
           </v-row>
 
@@ -217,8 +213,11 @@
 
 <script>
 import Address from "../Global/Address.vue";
+import AutoComplete from "../Global/AutoComplete.vue";
+import Date from "../Global/Date.vue";
+import Time from "../Global/Time.vue";
+
 import axios from "axios";
-import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
 import H from "../../assets/fastpolylines";
 export default {
@@ -266,8 +265,10 @@ export default {
   },
 
   components: {
-    VueGoogleAutocomplete,
     Address,
+    AutoComplete,
+    Date,
+    Time,
   },
   methods: {
     assessLocale(place) {
@@ -339,18 +340,13 @@ export default {
       }
     },
 
-    setOrigin: function(e, p, i) {
-      this.load.origin.location.formatted_address = p.formatted_address;
-      this.load.origin.location.latitude = e.latitude;
-      this.load.origin.location.longitude = e.longitude;
-      this.load.origin.location.url = p.url;
-      this.load.origin.location.address_components = this.assessLocale(p);
+    setOrigin: function(e) {
+      console.log(e);
+      this.load.origin.location = e;
+      this.load.origin.location.address_components = this.assessLocale(e);
     },
     setDestination: function(e, p, i) {
-      this.load.destination.location.formatted_address = p.formatted_address;
-      this.load.destination.location.latitude = e.latitude;
-      this.load.destination.location.longitude = e.longitude;
-      this.load.destination.location.url = p.url;
+      this.load.destination.location = e;
       this.load.destination.location.address_components = this.assessLocale(p);
     },
     loadSubmit() {
@@ -371,6 +367,15 @@ export default {
       }
     },
   },
+  mounted() {
+    // for (let ref in this.$refs) {
+    //   const autocomplete = new google.maps.places.Autocomplete(this.$refs[ref]);
+    //   autocomplete.addListener("place_changed", () => {
+    //     const place = autocomplete.getPlace();
+    //     console.log(place);
+    //   });
+    // }
+  },
 };
 </script>
 
@@ -379,11 +384,12 @@ export default {
   padding: 12px 20px;
   margin: 12px;
   display: block;
-  width: 60vw;
   font-size: 20px;
+  width: 100%;
   font-weight: 400;
   outline: blue;
   height: 30px;
   line-height: 30px;
+  border: darkslategrey 2px;
 }
 </style>

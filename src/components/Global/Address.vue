@@ -2,15 +2,18 @@
   <div>
     <v-card elevation="0">
       <v-card-title> {{ title }} Information </v-card-title>
+      <v-card-subtitle v-if="load.date">
+        {{ title + " Time: " }}<br />{{ load.date }}
+      </v-card-subtitle>
       <v-card-subtitle v-if="load.time">
-        {{ title + " Time: "}}<br>{{ Date(load.time).toString() }}
+        {{ load.time }}
       </v-card-subtitle>
       <v-card-subtitle>
         {{ load.location.formatted_address }}
       </v-card-subtitle>
 
       <v-card-subtitle v-if="load.ref">
-        {{ title + " Reference: " + load.ref}}
+        {{ title + " Reference: " + load.ref }}
       </v-card-subtitle>
       <v-card-subtitle v-if="load.location.url">
         <a :href="load.location.url" target="_blank"

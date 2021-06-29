@@ -29,8 +29,8 @@ export default {
     this.getEquipments();
   },
   methods: {
-    console(x){
-      console.log(x)
+    console(x) {
+      console.log(x);
     },
     async getEquipments() {
       this.equipments = [];

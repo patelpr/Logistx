@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { fb, onSignIn } from "../../main";
+import firebase from "firebase";
+import { onSignIn } from "../../main";
 export default {
   data() {
     return {
@@ -31,20 +32,18 @@ export default {
   methods: {
     // (3) Expose $gapi methods
     async login() {
-      await this.$gapi.login().then(({ currentUser, hasGrantedScopes }) => {
-          // console.log({ currentUser, hasGrantedScopes })
-         onSignIn(currentUser.getAuthResponse())
-                    
-        })
-      
+      await this.$gapi.login().then(({ currentUser }) => {
+        onSignIn(currentUser.getAuthResponse());
+      });
+      this.$router.push("/");
     },
     async logout() {
-      await this.$gapi.logout();
-      await fb.auth().signOut();
+      await this.$gapi.logout().then(() => {
+        return firebase.auth().signOut();
+      });
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

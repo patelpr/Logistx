@@ -7,8 +7,8 @@ import { VueMaskDirective } from "v-mask";
 import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Vuex from 'vuex'
-import VueGapi from 'vue-gapi'
+import Vuex from "vuex";
+import VueGapi from "vue-gapi";
 
 const FB_CONFIG = {
   apiKey: "AIzaSyDmuK9IeyTyM7824qRQYGgD51ldJTdAVgA",
@@ -18,31 +18,43 @@ const FB_CONFIG = {
   messagingSenderId: "707547149273",
   appId: "1:707547149273:web:b25fd6c5f38a936c8cdfc8",
   measurementId: "G-JQ7HQD2359",
-  clientId: '707547149273-d365i9o81bal8m662k36otf145do6kfg.apps.googleusercontent.com',
+  clientId:
+    "707547149273-d365i9o81bal8m662k36otf145do6kfg.apps.googleusercontent.com",
   scopes: [
-    'email',
-    'profile',
+    "email",
+    "profile",
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/contacts",
-    'https://mail.google.com/',
-    'https://www.googleapis.com/auth/tasks'
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/tasks",
   ],
-  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v2/rest', 'https://tasks.googleapis.com/$discovery/rest?version=v1', 'https://people.googleapis.com/$discovery/rest?version=v1', 'https://gmail.googleapis.com/$discovery/rest?version=v1']
+  discoveryDocs: [
+    "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
+    "https://tasks.googleapis.com/$discovery/rest?version=v1",
+    "https://people.googleapis.com/$discovery/rest?version=v1",
+    "https://gmail.googleapis.com/$discovery/rest?version=v1",
+  ],
 
   // 'https://www.googleapis.com/auth/calendar',
 
   //'https://calendar-json.googleapis.com/$discovery/rest?version=v3',
-
 };
-export const fb = firebase.initializeApp(FB_CONFIG)
+Vue.use(VueGapi, {
+  apiKey: FB_CONFIG.apiKey,
+  clientId: FB_CONFIG.clientId,
+  discoveryDocs: FB_CONFIG.discoveryDocs,
+  scope: FB_CONFIG.scopes.join(" "),
+});
+firebase.initializeApp(FB_CONFIG);
 
 function isUserEqual(googleUser, firebaseUser) {
   if (firebaseUser) {
     var providerData = firebaseUser.providerData;
+    console.log(googleUser);
     for (var i = 0; i < providerData.length; i++) {
       if (
         providerData[i].providerId ===
-        fb.auth.GoogleAuthProvider.PROVIDER_ID &&
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
         providerData[i].uid === googleUser.getBasicProfile().getId()
       ) {
         // We don't need to reauth the Firebase connection.
@@ -52,14 +64,16 @@ function isUserEqual(googleUser, firebaseUser) {
   }
   return false;
 }
-export function onSignIn(googleUser) {
+export async function onSignIn(googleUser) {
   // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-  var unsubscribe = fb.auth().onAuthStateChanged((firebaseUser) => {
+  var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
     unsubscribe();
     // Check if we are already signed-in Firebase with the correct user.
     if (!isUserEqual(googleUser, firebaseUser)) {
       // Build Firebase credential with the Google ID token.
-      let credential = firebase.auth.GoogleAuthProvider.credential(googleUser.id_token)
+      let credential = firebase.auth.GoogleAuthProvider.credential(
+        googleUser.id_token
+      );
       // Sign in with credential from the Google user.
       // [START auth_google_signin_credential]
       firebase
@@ -71,29 +85,19 @@ export function onSignIn(googleUser) {
           var errorMessage = error.message;
           // The email of the user's account used.
           var email = error.email;
-          // The fb.auth.AuthCredential type that was used.
+          // The firebase.auth.AuthCredential type that was used.
           var credential = error.credential;
           // ...
         });
-      console.log("user", fb.auth.currentUser);
       // [END auth_google_signin_credential]
+      console.log(firebase.auth().currentUser.uid)
     } else {
-      console.log("User already signed-in fb.");
+      console.log("User already signed-in firebase.");
     }
   });
 }
 
-
-
-Vue.use(VueGapi, {
-  apiKey: FB_CONFIG.apiKey,
-  clientId: FB_CONFIG.clientId,
-  discoveryDocs: FB_CONFIG.discoveryDocs,
-  scope: FB_CONFIG.scopes.join(' ')
-})
-
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 //INPUT FORMATTER : v-mask="'##-##-####'" is equal to 00-00-0000
 Vue.directive("mask", VueMaskDirective);
 //End Input Formatter
@@ -116,8 +120,6 @@ Vue.config.productionTip = false;
 
 //Authentication for GAPI and Firebase
 //https://github.com/msukmanowsky/gapi-firebase
-
-
 
 new Vue({
   vuetify,
