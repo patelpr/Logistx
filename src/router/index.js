@@ -81,7 +81,7 @@ let router = new Router({
       },
     },
     {
-      path: "drivers/application",
+      path: "/drivers/application",
       name: "Drivers Application",
       component: () => import("../components/Drivers/DriverApplication"),
       meta: {
@@ -97,7 +97,7 @@ let router = new Router({
       },
     },
     {
-      path: "/Equipment/:id",
+      path: "/equipment/:id",
       name: "Equipment",
       component: () => import("../components/Equipments/SingleEquipment"),
       props: true,
@@ -120,7 +120,14 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     router.app.$gapi.isSignedIn().then((isSignedIn) => {
       if (isSignedIn) {
-        console.log(router.app.$gapi.getUserData().id);
+        try {
+          // NOTE: 45min refresh policy is what google recommends
+          window.setInterval(router.app.$gapi.refreshToken(), 2.7e+6)
+        } catch (e) {
+          console.error(e)
+        }
+        console.log("GAPI",router.app.$gapi.getUserData().id);
+        console.log("FIREBASE",firebase.auth().currentUser.uid);
         next();
       } else {
         console.log("You must be logged in to see this page");

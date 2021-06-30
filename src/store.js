@@ -17,7 +17,7 @@ const store = new Vuex.Store({
        firebase
             .firestore()
             .collection("users")
-            .doc(this.$gapi.getUserData().id)
+            .doc(firebase.auth().currentUser.uid)
             .collection("loads")
             .where("active", "==", true)
             .onSnapshot((querySnapshot) => {

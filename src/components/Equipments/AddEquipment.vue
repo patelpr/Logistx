@@ -113,7 +113,7 @@ export default {
       let docRef = firebase
         .firestore()
         .collection("users")
-        .doc(this.$gapi.getUserData().id)
+        .doc(firebase.auth().currentUser.uid)
         .collection("equipments")
         .doc();
       console.log(docRef);

@@ -38,9 +38,9 @@ export default {
       this.$router.push("/");
     },
     async logout() {
-      await this.$gapi.logout().then(() => {
-        return firebase.auth().signOut();
-      });
+const auth2 = gapi.auth2.getAuthInstance()
+await auth2.signOut()
+  .then(() => { return firebase.auth().signOut() })
     },
   },
 };

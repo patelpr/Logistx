@@ -81,7 +81,7 @@ export default {
         await firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc(this.id)
           .get()

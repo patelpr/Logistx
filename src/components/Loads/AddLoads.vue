@@ -322,7 +322,7 @@ export default {
         this.load.origin.location != this.load.destination.location
           ? await axios
               .get(
-                `https://api.openrouteservice.org/v2/directions/driving-hgv?api_key=5b3ce3597851110001cf624841462741459b4d1d93962280efd335b8&start=${this.load.origin.location.longitude},${this.load.origin.location.latitude}&end=${this.load.destination.location.longitude},${this.load.destination.location.latitude}`
+                `https://api.openrouteservice.org/v2/directions/driving-hgv?api_key=${process.env.VUE_APP_OPENROUTE_API_KEY}&start=${this.load.origin.location.longitude},${this.load.origin.location.latitude}&end=${this.load.destination.location.longitude},${this.load.destination.location.latitude}`
               )
               .then((res) => {
                 console.log(res);
@@ -358,7 +358,7 @@ export default {
         const docRef = firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc();
         this.load.id = docRef.id;

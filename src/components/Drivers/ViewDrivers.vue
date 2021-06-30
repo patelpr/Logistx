@@ -45,7 +45,7 @@ export default {
         await firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("drivers")
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {

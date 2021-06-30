@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue from "vue"; 
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import router from "./router";
@@ -11,15 +11,15 @@ import Vuex from "vuex";
 import VueGapi from "vue-gapi";
 
 const config = {
-  apiKey: "AIzaSyDmuK9IeyTyM7824qRQYGgD51ldJTdAVgA",
-  authDomain: "progistics-app.firebaseapp.com",
-  projectId: "progistics-app",
-  storageBucket: "progistics-app.appspot.com",
-  messagingSenderId: "707547149273",
-  appId: "1:707547149273:web:b25fd6c5f38a936c8cdfc8",
-  measurementId: "G-JQ7HQD2359",
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_DATABASE_URL,
+  storageBucket: process.env.VUE_APP_PROJECT_ID,
+  messagingSenderId: process.env.VUE_APP_STORAGE_BUCKET,
+  appId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  measurementId: process.env.VUE_APP_APP_ID,
   clientId:
-    "707547149273-d365i9o81bal8m662k36otf145do6kfg.apps.googleusercontent.com",
+    "707547149273-ppdpc82jt17qn9hl0hdmk91e476bpbq1.apps.googleusercontent.com",
   scopes: [
     "email",
     "profile",
@@ -39,78 +39,6 @@ const config = {
 };
 firebase.initializeApp(config);
 
-// var uiConfig = {
-//   signInSuccessUrl: "localhost:8080", // Assuming you are running on your local machine
-//   signInOptions: [
-//     {
-//       provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-//       scopes: config.scopes,
-//     },
-//   ],
-//   // Terms of service url.
-//   tosUrl: "/",
-// };
-
-// // Initialize the FirebaseUI Widget using Firebase.
-// var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// // The start method will wait until the DOM is loaded.
-// ui.start("#firebaseui-auth-container", uiConfig);
-
-// // This function will trigger when there is a login event
-// firebase.auth().onAuthStateChanged(function(user) {
-//   console.log(user);
-//   // Make sure there is a valid user object
-//   if (user) {
-//     var script = document.createElement("script");
-//     script.type = "text/javascript";
-//     script.src = "https://apis.google.com/js/api.js";
-//     // Once the Google API Client is loaded, you can run your code
-//     script.onload = function(e) {
-//       // Initialize the Google API Client with the config object
-//       gapi.client
-//         .init({
-//           apiKey: config.apiKey,
-//           clientId: config.clientID,
-//           discoveryDocs: config.discoveryDocs,
-//           scope: config.scopes.join(" "),
-//         })
-//         // Loading is finished, so start the app
-//         .then(function() {
-//           // Make sure the Google API Client is properly signed in
-//           if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-//             startApp(user);
-//           } else {
-//             firebase.auth().signOut(); // Something went wrong, sign out
-//           }
-//         });
-//     };
-//     // Add to the document
-//     document.getElementsByTagName("head")[0].appendChild(script);
-//   }
-// });
-
-// function startApp(user) {
-//   console.log(user);
-
-//   // Make sure to refresh the Auth Token in case it expires!
-//   firebase
-//     .auth()
-//     .currentUser.getToken()
-//     .then(function() {
-//       return gapi.client.calendar.events.list({
-//         calendarId: "primary",
-//         timeMin: new Date().toISOString(),
-//         showDeleted: false,
-//         singleEvents: true,
-//         maxResults: 10,
-//         orderBy: "startTime",
-//       });
-//     })
-//     .then(function(response) {
-//       console.log(response);
-//     });
-// }
-
 Vue.use(VueGapi, {
   apiKey: config.apiKey,
   clientId: config.clientId,
@@ -125,7 +53,7 @@ function isUserEqual(googleUser, firebaseUser) {
     for (var i = 0; i < providerData.length; i++) {
       if (
         providerData[i].providerId ===
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
         providerData[i].uid === googleUser.getBasicProfile().getId()
       ) {
         // We don't need to reauth the Firebase connection.
@@ -161,13 +89,21 @@ export async function onSignIn(googleUser) {
           // ...
         });
       // [END auth_google_signin_credential]
-      console.log(this.$gapi.getUserData().id);
+      console.log("AFTER FB AUTH", router.app.$gapi.getUserData().id);
     } else {
       console.log("User already signed-in firebase.");
     }
   });
 }
-
+firebase.getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      unsubscribe();
+      resolve(user);
+      console.log(user)
+    }, reject);
+  })
+};
 Vue.use(Vuex);
 //INPUT FORMATTER : v-mask="'##-##-####'" is equal to 00-00-0000
 Vue.directive("mask", VueMaskDirective);

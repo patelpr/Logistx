@@ -87,7 +87,7 @@ export default {
   },
   created() {
     this.getLoads();
-    console.log(firebase.auth().currentUser.uid);
+    console.log("VIEW LOADS FILE CREATED",firebase.auth().currentUser.uid);
   },
   methods: {
     link() {
@@ -110,7 +110,7 @@ export default {
         await firebase
           .firestore()
           .collection("users")
-          .doc(firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid))
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {
@@ -128,7 +128,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc(id)
           .update({ active: false });
