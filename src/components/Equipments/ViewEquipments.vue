@@ -38,7 +38,7 @@ export default {
         const docRef = firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(this.$gapi.getUserData().id)
           .collection("equipments");
 
         await docRef.onSnapshot((querySnapshot) => {
@@ -57,7 +57,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(this.$gapi.getUserData().id)
           .collection("equipments")
           .doc(id)
           .update({ active: false });

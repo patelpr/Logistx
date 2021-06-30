@@ -77,7 +77,7 @@ function uploadRateCon(file, id) {
         firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(this.$gapi.getUserData().id)
           .collection("loads")
           .doc(id)
           .update({ "load.ratecon": downloadURL });

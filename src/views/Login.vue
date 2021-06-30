@@ -3,7 +3,7 @@
     <v-overlay>
       <v-card>
         <v-card-title primary-title>
-          <div>
+          <div id="#firebaseui-auth-container" >
             <h3 class="headline mb-0">Login!</h3>
             <div>You must be logged in to proceed. Hover over the Navigation bar to the left!</div>
           </div>

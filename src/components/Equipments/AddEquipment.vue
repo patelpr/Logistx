@@ -108,15 +108,15 @@ export default {
       } catch (error) {
         console.log(error);
       }
-      console.log(this.$gapi.clientProvider.client.authInstance.currentUser.getBasicProfile().getId());
     },
     async equipmentSubmit() {
       let docRef = firebase
         .firestore()
         .collection("users")
-        .doc()
+        .doc(this.$gapi.getUserData().id)
         .collection("equipments")
         .doc();
+      console.log(docRef);
       try {
         console.log(docRef);
         this.equipment.equipment_id = docRef.id;

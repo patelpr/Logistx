@@ -27,7 +27,8 @@ let router = new Router({
       path: "/login",
       name: "Login",
       component: () => import("../views/Login"),
-    },{
+    },
+    {
       path: "/loads",
       name: "loads",
       component: () => import("../components/Loads/ViewLoads"),
@@ -115,22 +116,22 @@ let router = new Router({
   ],
 });
 
-
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     router.app.$gapi.isSignedIn().then((isSignedIn) => {
       if (isSignedIn) {
-        next()
+        console.log(router.app.$gapi.getUserData().id);
+        next();
       } else {
-        console.log('You must be logged in to see this page')
+        console.log("You must be logged in to see this page");
         next({
-          path: '/login',
-        })
+          path: "/login",
+        });
       }
-    })
+    });
   } else {
-    next()
+    next();
   }
-})
+});
 
 export default router;

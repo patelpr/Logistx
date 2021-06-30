@@ -98,7 +98,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="l1 = 3"> Continue </v-btn>
+        <v-btn color="primary" @click="saveRoute()"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -205,7 +205,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="saveRoute()"> Book Load </v-btn>
+        <v-btn color="primary" @click="loadSubmit()"> Book Load </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -310,13 +310,14 @@ export default {
         }
       }
       console.log(address_comp);
-
-      return address_comp;
+      place.address_components = address_comp;
+      return place;
     },
     clear() {
       this.reRender++;
     },
     async saveRoute() {
+      console.log(this.load);
       try {
         this.load.origin.location != this.load.destination.location
           ? await axios
@@ -325,37 +326,40 @@ export default {
               )
               .then((res) => {
                 console.log(res);
-                this.load.route.summary =
-                  res.data.features[0].properties.summary;
-                console.log(res.data.features[0].geometry.coordinates);
-                this.load.route.geometry = H.encode({
+                res.data.features[0].geometry.coordinates = H.encode({
                   polyline: res.data.features[0].geometry.coordinates,
                 });
+                console.log(res);
+                this.load.route = res.data.features[0];
+
                 this.load.createdAt = Date.now();
-                this.loadSubmit();
               })
           : console.error("Destination and origin must be different");
       } catch (error) {
         console.log(error);
+      } finally {
+        this.l1++;
       }
     },
 
     setOrigin: function(e) {
       console.log(e);
-      this.load.origin.location = e;
-      this.load.origin.location.address_components = this.assessLocale(e);
+      this.load.origin.location = this.assessLocale(e);
+      console.log(this.load.origin);
     },
-    setDestination: function(e, p, i) {
-      this.load.destination.location = e;
-      this.load.destination.location.address_components = this.assessLocale(p);
+    setDestination: function(e) {
+      console.log(e);
+
+      this.load.destination.location = this.assessLocale(e);
+      console.log(this.load.destination);
     },
     loadSubmit() {
       try {
         const docRef = firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("equipments")
+          .doc(this.$gapi.getUserData().id)
+          .collection("loads")
           .doc();
         this.load.id = docRef.id;
         docRef.set(this.load);

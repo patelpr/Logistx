@@ -217,7 +217,7 @@ export default {
         const driDoc = firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(this.$gapi.getUserData().id)
           .collection("drivers")
           .doc(driversGlobalId);
         await driDoc.set(this.driver);

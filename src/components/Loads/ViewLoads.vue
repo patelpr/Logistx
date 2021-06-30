@@ -4,15 +4,14 @@
     <v-col cols="2"
       ><v-navigation-drawer right width="16.6vw">
         <v-card v-if="selectedLoad" elevation="0">
+          <Address :load="selectedLoad.origin" title="Pickup" />
+          <Address :load="selectedLoad.destination" title="Delivery" />
 
-               <Address :load="selectedLoad.origin" title="Pickup" />
-              <Address :load="selectedLoad.destination" title="Delivery" />
-
-            <div class="headline">
-              {{ (selectedLoad.route.summary.distance / 1609).toFixed(2) }}
-              miles
-            </div>
-            <span>{{ setTime() }} </span>
+          <div class="headline">
+            {{ (selectedLoad.route.summary.distance / 1609).toFixed(2) }}
+            miles
+          </div>
+          <span>{{ setTime() }} </span>
 
           <v-card-actions>
             <v-btn
@@ -80,7 +79,7 @@
 <script>
 import firebase from "firebase";
 import Map from "../Map.vue";
-import Address from '../Global/Address.vue'
+import Address from "../Global/Address.vue";
 export default {
   components: {
     Map,
@@ -88,6 +87,7 @@ export default {
   },
   created() {
     this.getLoads();
+    console.log(firebase.auth().currentUser.uid);
   },
   methods: {
     link() {
@@ -110,12 +110,13 @@ export default {
         await firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid))
           .collection("loads")
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {
+            console.log(querySnapshot);
             querySnapshot.forEach((doc) => {
-                this.loads.push(doc.data());
+              this.loads.push(doc.data());
             });
           });
       } catch (error) {
@@ -127,7 +128,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(this.$gapi.getUserData().id)
           .collection("loads")
           .doc(id)
           .update({ active: false });
@@ -143,7 +144,7 @@ export default {
     return {
       selectedLoad: null,
       loads: [],
-      dialog:false
+      dialog: false,
     };
   },
 };
