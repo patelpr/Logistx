@@ -5,13 +5,6 @@
     </v-list-item-icon>
     <v-list-item-title>Logout</v-list-item-title>
   </v-list-item>
-  <v-list-item v-else link @click="login()">
-    <v-list-item-icon>
-      <v-icon>mdi-door</v-icon>
-    </v-list-item-icon>
-    <v-list-item-title>Login</v-list-item-title>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-  </v-list-item>
 </template>
 
 <script>
@@ -24,23 +17,16 @@ export default {
     };
   },
   created() {
-    // (2) Subscribe to authentication status changes
-    this.$gapi.listenUserSignIn((isSignedIn) => {
-      this.isSignedIn = isSignedIn;
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.isSignedIn = user;
+      }
     });
   },
   methods: {
     // (3) Expose $gapi methods
-    async login() {
-      await this.$gapi.login().then(({ currentUser }) => {
-        onSignIn(currentUser.getAuthResponse());
-      });
-      this.$router.push("/");
-    },
-    async logout() {
-      await this.$gapi.logout().then(() => {
-        return firebase.auth().signOut();
-      });
+    logout() {
+      firebase.auth().signOut();
     },
   },
 };

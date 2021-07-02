@@ -8,7 +8,9 @@ import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Vuex from "vuex";
-import VueGapi from "vue-gapi";
+// import VueGapi from "vue-gapi";
+import firebaseui from "firebaseui";
+import "firebaseui/dist/firebaseui.css";
 
 const config = {
   apiKey: "AIzaSyDmuK9IeyTyM7824qRQYGgD51ldJTdAVgA",
@@ -38,7 +40,51 @@ const config = {
   ],
 };
 firebase.initializeApp(config);
+firebase.getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+};
 
+var uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+      // User successfully signed in.
+      // Return type determines whether we continue the redirect automatically
+      // or whether we leave that to developer to handle.
+      return true;
+    },
+    uiShown: function() {
+      // The widget is rendered.
+      // Hide the loader.
+      document.getElementById("loader").style.display = "none";
+    },
+  },
+  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+  signInFlow: "popup",
+  signInSuccessUrl: "/",
+  signInOptions: [
+    // Leave the lines as is for the providers you want to offer your users.
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+  ],
+  // Terms of service url.
+  tosUrl: "/",
+  // Privacy policy url.
+  privacyPolicyUrl: "/",
+};
+
+
+
+
+/* firebase ui init gapi*/
 // var uiConfig = {
 //   signInSuccessUrl: "localhost:8080", // Assuming you are running on your local machine
 //   signInOptions: [
@@ -110,63 +156,63 @@ firebase.initializeApp(config);
 //       console.log(response);
 //     });
 // }
+/*GAPI*/
+// Vue.use(VueGapi, {
+//   apiKey: config.apiKey,
+//   clientId: config.clientId,
+//   discoveryDocs: config.discoveryDocs,
+//   scope: config.scopes.join(" "),
+// });
 
-Vue.use(VueGapi, {
-  apiKey: config.apiKey,
-  clientId: config.clientId,
-  discoveryDocs: config.discoveryDocs,
-  scope: config.scopes.join(" "),
-});
-
-function isUserEqual(googleUser, firebaseUser) {
-  if (firebaseUser) {
-    var providerData = firebaseUser.providerData;
-    console.log(googleUser);
-    for (var i = 0; i < providerData.length; i++) {
-      if (
-        providerData[i].providerId ===
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-        providerData[i].uid === googleUser.getBasicProfile().getId()
-      ) {
-        // We don't need to reauth the Firebase connection.
-        return true;
-      }
-    }
-  }
-  return false;
-}
-export async function onSignIn(googleUser) {
-  // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-  var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
-    unsubscribe();
-    // Check if we are already signed-in Firebase with the correct user.
-    if (!isUserEqual(googleUser, firebaseUser)) {
-      // Build Firebase credential with the Google ID token.
-      let credential = firebase.auth.GoogleAuthProvider.credential(
-        googleUser.id_token
-      );
-      // Sign in with credential from the Google user.
-      // [START auth_google_signin_credential]
-      firebase
-        .auth()
-        .signInWithCredential(credential)
-        .catch((error) => {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // The email of the user's account used.
-          var email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential;
-          // ...
-        });
-      // [END auth_google_signin_credential]
-      console.log(this.$gapi.getUserData().id);
-    } else {
-      console.log("User already signed-in firebase.");
-    }
-  });
-}
+// function isUserEqual(googleUser, firebaseUser) {
+//   if (firebaseUser) {
+//     var providerData = firebaseUser.providerData;
+//     console.log(googleUser);
+//     for (var i = 0; i < providerData.length; i++) {
+//       if (
+//         providerData[i].providerId ===
+//           firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+//         providerData[i].uid === googleUser.getBasicProfile().getId()
+//       ) {
+//         // We don't need to reauth the Firebase connection.
+//         return true;
+//       }
+//     }
+//   }
+//   return false;
+// }
+// export async function onSignIn(googleUser) {
+//   // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+//   var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
+//     unsubscribe();
+//     // Check if we are already signed-in Firebase with the correct user.
+//     if (!isUserEqual(googleUser, firebaseUser)) {
+//       // Build Firebase credential with the Google ID token.
+//       let credential = firebase.auth.GoogleAuthProvider.credential(
+//         googleUser.id_token
+//       );
+//       // Sign in with credential from the Google user.
+//       // [START auth_google_signin_credential]
+//       firebase
+//         .auth()
+//         .signInWithCredential(credential)
+//         .catch((error) => {
+//           // Handle Errors here.
+//           var errorCode = error.code;
+//           var errorMessage = error.message;
+//           // The email of the user's account used.
+//           var email = error.email;
+//           // The firebase.auth.AuthCredential type that was used.
+//           var credential = error.credential;
+//           // ...
+//         });
+//       // [END auth_google_signin_credential]
+//       console.log(this.$gapi.getUserData().id);
+//     } else {
+//       console.log("User already signed-in firebase.");
+//     }
+//   });
+// }
 
 Vue.use(Vuex);
 //INPUT FORMATTER : v-mask="'##-##-####'" is equal to 00-00-0000

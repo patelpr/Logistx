@@ -12,6 +12,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^8.6.2",
+    "firebaseui": "^4.8.0",
     "gapi-script": "^1.2.0",
     "leaflet": "^1.7.1",
     "leaflet-routing-machine": "^3.2.12",

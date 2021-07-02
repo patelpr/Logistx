@@ -1,27 +1,26 @@
 <template>
-  <div class="text-xs-center">
+  <v-layout row wrap>
     <v-overlay>
-      <v-card>
-        <v-card-title primary-title>
-          <div id="#firebaseui-auth-container" >
-            <h3 class="headline mb-0">Login!</h3>
-            <div>You must be logged in to proceed. Hover over the Navigation bar to the left!</div>
-          </div>
-        </v-card-title>
-        <v-card-actions>
-          
-        </v-card-actions>
-      </v-card>
+      <div id="firebaseui-auth-container" class="pa-12"></div>
     </v-overlay>
-  </div>
+  </v-layout>
 </template>
 
 <script>
 import firebase from "firebase";
+import firebaseui from "firebaseui";
+import "firebaseui/dist/firebaseui.css";
 export default {
- 
-
+  mounted() {
+    let ui = firebaseui.auth.AuthUI.getInstance();
+    if (!ui) {
+      ui = new firebaseui.auth.AuthUI(firebase.auth());
+    }
+    var uiConfig = {
+      signInSuccessUrl: "/profile",
+      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+    };
+    ui.start("#firebaseui-auth-container", uiConfig);
+  },
 };
 </script>
-
-<style></style>

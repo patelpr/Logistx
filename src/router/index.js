@@ -116,19 +116,11 @@ let router = new Router({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    router.app.$gapi.isSignedIn().then((isSignedIn) => {
-      if (isSignedIn) {
-        console.log(router.app.$gapi.getUserData().id);
-        next();
-      } else {
-        console.log("You must be logged in to see this page");
-        next({
-          path: "/login",
-        });
-      }
-    });
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  if (requiresAuth && !(await firebase.getCurrentUser())) {
+    ui.start("#firebaseui-auth-container", uiConfig);
+    next({ path: "/login" });
   } else {
     next();
   }
