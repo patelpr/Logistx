@@ -61,6 +61,9 @@ export default {
           ],
         },
         (x) => {
+          x.lat = x.geometry.location.lat();
+          x.lng = x.geometry.location.lng();
+          console.log("cgeck", x);
           this.$emit("place", x);
         }
       );

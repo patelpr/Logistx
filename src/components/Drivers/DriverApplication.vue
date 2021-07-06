@@ -116,7 +116,7 @@
                 <v-icon>mdi-map-marker</v-icon>
               </v-col>
               <v-col cols="12" md="11">
-                <vue-google-autocomplete
+                <!-- <vue-google-autocomplete
                   id="driveraddress"
                   class="pa-5"
                   style="border:1px solid gray;"
@@ -127,7 +127,8 @@
                   width="100%"
                 >
                 </vue-google-autocomplete
-              ></v-col>
+              > -->
+              </v-col>
             </v-row>
             <v-row> </v-row>
           </v-card>
@@ -211,7 +212,7 @@
                   name="company"
                   v-model="driver.work.history[i].company"
                   label="Company"
-                  single-line
+                  single-line     
                   ><v-icon slot="prepend">
                     mdi-domain
                   </v-icon></v-text-field
@@ -275,7 +276,6 @@
 </template>
 
 <script>
-import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
 export default {
   data() {
@@ -334,7 +334,6 @@ export default {
     };
   },
   components: {
-    VueGoogleAutocomplete,
   },
 
   methods: {

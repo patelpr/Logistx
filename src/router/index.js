@@ -119,7 +119,6 @@ let router = new Router({
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   if (requiresAuth && !(await firebase.getCurrentUser())) {
-    ui.start("#firebaseui-auth-container", uiConfig);
     next({ path: "/login" });
   } else {
     next();

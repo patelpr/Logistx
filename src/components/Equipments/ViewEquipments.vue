@@ -2,9 +2,16 @@
   <v-row d-flex align-content-space-around class="mx-auto">
     <v-col v-for="equip in equipments" :key="equip.equipment_id" cols="4">
       <v-card>
-        <v-card-title>
-          {{ equip.Make + " " + equip.Model }}
+        <v-card-title primary-title>
+          {{ equip.info.id }}
         </v-card-title>
+        <v-card-subtitle>
+          {{
+            equip.vinData.Make.toUpperCase() +
+              " " +
+              equip.vinData.Model.toUpperCase()
+          }}
+        </v-card-subtitle>
         <v-card-subtitle>{{ equip["Model Year"] }}</v-card-subtitle>
         <v-card-actions>
           <v-btn
@@ -38,7 +45,7 @@ export default {
         const docRef = firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("equipments");
 
         await docRef.onSnapshot((querySnapshot) => {
@@ -57,7 +64,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("equipments")
           .doc(id)
           .update({ active: false });

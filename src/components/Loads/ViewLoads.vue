@@ -128,7 +128,7 @@ export default {
         firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .doc(id)
           .update({ active: false });

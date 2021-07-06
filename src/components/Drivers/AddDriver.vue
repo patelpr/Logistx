@@ -102,7 +102,7 @@
                 <v-icon>mdi-map-marker</v-icon>
               </v-col>
               <v-col cols="12" md="11">
-                <vue-google-autocomplete
+                <!-- <vue-google-autocomplete
                   id="employeeaddress"
                   class="pa-5"
                   style="border: 1px solid gray"
@@ -112,8 +112,9 @@
                   v-on:placechanged="setPlace"
                   width="100%"
                 >
-                </vue-google-autocomplete
-              ></v-col>
+                </vue-google-autocomplete 
+              >--></v-col
+              >
             </v-row>
             <v-row> </v-row>
           </v-card>
@@ -178,7 +179,6 @@
 </template>
 
 <script>
-import VueGoogleAutocomplete from "vue-google-autocomplete";
 import firebase from "firebase";
 export default {
   data() {
@@ -193,9 +193,7 @@ export default {
       },
     };
   },
-  components: {
-    VueGoogleAutocomplete,
-  },
+  components: {},
 
   methods: {
     setPlace(e, p, i) {
@@ -205,7 +203,10 @@ export default {
     async submit() {
       let driversGlobalId = "";
       try {
-        const driver = firebase.firestore().collection("drivers").doc();
+        const driver = firebase
+          .firestore()
+          .collection("drivers")
+          .doc();
         this.driver.id = driver.id;
         driversGlobalId = driver.id;
         await driver.set(this.driver);
@@ -217,7 +218,7 @@ export default {
         const driDoc = firebase
           .firestore()
           .collection("users")
-          .doc(this.$gapi.getUserData().id)
+          .doc(firebase.auth().currentUser.uid)
           .collection("drivers")
           .doc(driversGlobalId);
         await driDoc.set(this.driver);

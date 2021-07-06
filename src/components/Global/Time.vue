@@ -22,7 +22,7 @@
     </template>
     <v-time-picker
       v-if="menu2"
-      ampm-in-title
+      format="24hr"
       v-model="time"
       full-width
       @click:minute="$refs.menu.save(time)"

@@ -30,11 +30,13 @@ const searchLocation = async val => {
     }
 
     var service = new google.maps.places.AutocompleteService()
-    service.getPlacePredictions({
-      input: val,
-      types: ['geocode']
-    },
-    displaySuggestions)
+    service.getPlacePredictions(
+      {
+        input: val,
+        types: ["geocode"],
+      },
+      displaySuggestions
+    );
   }).catch(function (err) { throw err })
 
   return promise

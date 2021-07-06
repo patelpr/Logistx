@@ -7,7 +7,6 @@ import { VueMaskDirective } from "v-mask";
 import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Vuex from "vuex";
 // import VueGapi from "vue-gapi";
 import firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
@@ -39,7 +38,20 @@ const config = {
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
   ],
 };
-firebase.initializeApp(config);
+// firebase.initializeApp(config);
+
+var firebaseConfig = {
+  apiKey: "AIzaSyASOQIUVCneyQLGqN7Nc0AgqkxOsflMcfA",
+  authDomain: "progistics-app.firebaseapp.com",
+  projectId: "progistics-app",
+  storageBucket: "progistics-app.appspot.com",
+  messagingSenderId: "707547149273",
+  appId: "1:707547149273:web:8b5e1d5d1bc7be398cdfc8",
+  measurementId: "G-05HYKRD27Y",
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
 firebase.getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -48,41 +60,6 @@ firebase.getCurrentUser = () => {
     }, reject);
   });
 };
-
-var uiConfig = {
-  callbacks: {
-    signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-      // User successfully signed in.
-      // Return type determines whether we continue the redirect automatically
-      // or whether we leave that to developer to handle.
-      return true;
-    },
-    uiShown: function() {
-      // The widget is rendered.
-      // Hide the loader.
-      document.getElementById("loader").style.display = "none";
-    },
-  },
-  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-  signInFlow: "popup",
-  signInSuccessUrl: "/",
-  signInOptions: [
-    // Leave the lines as is for the providers you want to offer your users.
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    firebase.auth.GithubAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
-    firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-  ],
-  // Terms of service url.
-  tosUrl: "/",
-  // Privacy policy url.
-  privacyPolicyUrl: "/",
-};
-
-
-
 
 /* firebase ui init gapi*/
 // var uiConfig = {
@@ -207,14 +184,13 @@ var uiConfig = {
 //           // ...
 //         });
 //       // [END auth_google_signin_credential]
-//       console.log(this.$gapi.getUserData().id);
+//       console.log(firebase.auth().currentUser.uid);
 //     } else {
 //       console.log("User already signed-in firebase.");
 //     }
 //   });
 // }
 
-Vue.use(Vuex);
 //INPUT FORMATTER : v-mask="'##-##-####'" is equal to 00-00-0000
 Vue.directive("mask", VueMaskDirective);
 //End Input Formatter

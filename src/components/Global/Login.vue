@@ -26,7 +26,10 @@ export default {
   methods: {
     // (3) Expose $gapi methods
     logout() {
-      firebase.auth().signOut();
+      firebase
+        .auth()
+        .signOut()
+        .then(this.$router.push({ path: "/login" }));
     },
   },
 };

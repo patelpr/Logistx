@@ -42,8 +42,45 @@
                   equipment.vinData["Model"]
               }}
             </v-card-title>
-          </v-row>
+            <v-text-field
+              class="ma-2"
+              single-line
+              label="Truck ID Number"
+              hint="Truck ID Number"
+              filled
+              persistent-hint
+              outlined
+              dense
+              clearable
+              v-model="equipment.info.id"
+            ></v-text-field>
+            <v-text-field
+              class="ma-2"
+              single-line
+              label="Truck Mileage"
+              hint="Truck Mileage"
+              filled
+              persistent-hint
+              outlined
+              dense
+              clearable
+              v-model="equipment.info.mileage"
+            ></v-text-field>
 
+            <!-- <v-text-field
+              class="ma-2"
+              single-line
+              label="Truck Trailer"
+              hint="Truck Trailer"
+              filled
+              persistent-hint
+              outlined
+              dense
+              clearable
+              v-model="equipment.info.type"
+            ></v-text-field>  -->
+          </v-row>
+          <v-divider class="ma-12"></v-divider>
           <v-row d-flex align-content-space-around flex-wrap>
             <v-text-field
               class="ma-2"
@@ -58,8 +95,8 @@
               outlined
               dense
               clearable
-              ondurationchange="this. style.width = ((this.value.length + 1) * 8) + 'px';"
-              :v-model="equipment[item[0]]"
+              onblur="this. style.width = ((this.value.length + 1) * 8) + 'px';"
+              :v-model="equipment.vinData[item[0]]"
             ></v-text-field>
           </v-row>
         </v-card>
@@ -80,6 +117,10 @@ export default {
       e1: 1,
       reRender: 0,
       equipment: {
+        info: {
+          id: null,
+          mileage: null,
+        },
         active: true,
         vin: "",
       },
@@ -113,7 +154,7 @@ export default {
       let docRef = firebase
         .firestore()
         .collection("users")
-        .doc(this.$gapi.getUserData().id)
+        .doc(firebase.auth().currentUser.uid)
         .collection("equipments")
         .doc();
       console.log(docRef);
@@ -125,9 +166,8 @@ export default {
       } catch (error) {
         console.log(error);
       } finally {
-        this.reRender++;
+        this.$router.push({ path: "/equipments" });
 
-        this.$router.push("/equipments");
       }
     },
   },

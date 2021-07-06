@@ -8,8 +8,9 @@
 
 <script>
 import firebase from "firebase";
-import firebaseui from "firebaseui";
+import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
+
 export default {
   mounted() {
     let ui = firebaseui.auth.AuthUI.getInstance();
@@ -17,8 +18,12 @@ export default {
       ui = new firebaseui.auth.AuthUI(firebase.auth());
     }
     var uiConfig = {
-      signInSuccessUrl: "/profile",
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+      signInSuccessUrl: "/",
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
     };
     ui.start("#firebaseui-auth-container", uiConfig);
   },
