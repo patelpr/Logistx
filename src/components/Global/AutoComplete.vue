@@ -35,6 +35,50 @@ export default {
       return this.locationEntries;
     },
   },
+  methods: {
+    assessLocale(place) {
+      let address_comp = {};
+      for (const component of place.address_components) {
+        const componentType = component.types[0];
+
+        switch (componentType) {
+          case "street_number": {
+            address_comp.streetnumber = component.long_name;
+            break;
+          }
+
+          case "route": {
+            address_comp.street = component.long_name;
+            break;
+          }
+
+          case "postal_code": {
+            address_comp.postcode = component.long_name;
+            break;
+          }
+
+          case "postal_code_suffix": {
+            address_comp.postcode_suffix = component.long_name;
+            break;
+          }
+          case "locality":
+            address_comp.city = component.long_name;
+            break;
+
+          case "administrative_area_level_1": {
+            address_comp.state = component.short_name;
+            break;
+          }
+          case "country":
+            address_comp.country = component.long_name;
+            break;
+        }
+      }
+      console.log(address_comp);
+      place.address_components = address_comp;
+      return place;
+    },
+  },
   watch: {
     autocompleteLocationModel(newVal) {
       console.log(newVal.id);
@@ -63,7 +107,8 @@ export default {
         (x) => {
           x.lat = x.geometry.location.lat();
           x.lng = x.geometry.location.lng();
-          console.log("cgeck", x);
+          x = this.assessLocale(x);
+          console.log("place", x);
           this.$emit("place", x);
         }
       );

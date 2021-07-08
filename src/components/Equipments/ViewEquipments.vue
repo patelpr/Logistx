@@ -17,15 +17,20 @@
           :search="search"
           @click:row="handleClick"
         >
-          <template v-slot:item.actions="{ item }">
-            <v-icon small class="mr-2" @click="editItem(item)">
-              mdi-pencil
-            </v-icon>
-            <v-icon small @click="deleteItem(item)">
-              mdi-delete
-            </v-icon>
-          </template></v-data-table
-        >
+    
+
+          <template v-slot:no-data>
+            <v-card-title primary-title>
+              No Matching Equipment!
+            </v-card-title>
+          </template>
+
+          <template v-slot:no-results>
+            <v-card-title primary-title>
+              No Matching Equipment!
+            </v-card-title>
+          </template>
+        </v-data-table>
       </v-card>
     </v-col>
   </v-row>

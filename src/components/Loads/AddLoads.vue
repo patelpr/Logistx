@@ -26,7 +26,7 @@
         >
           <v-row class="mb-4">
             <div class="text-h6">Pick Up Information #{{ i + 1 }}</div>
-            <v-btn icon color="red" @click="deleteOriginLocation(i)">
+            <v-btn icon color="red" @click="load.origin.splice(i, 1)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-row>
@@ -34,7 +34,7 @@
             <AutoComplete
               v-on:place="
                 (e) => {
-                  load.origin[i].location = assessLocale(e);
+                  load.origin[i].location = e;
                 }
               "
             />
@@ -87,7 +87,7 @@
         >
           <v-row class="mb-4">
             <div class="text-h6">Delivery Information #{{ i + 1 }}</div>
-            <v-btn icon color="red" @click="deleteDestinationLocation(i)">
+            <v-btn icon color="red" @click="load.destination.splice(i, 1)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-row>
@@ -95,7 +95,7 @@
             <AutoComplete
               v-on:place="
                 (e) => {
-                  load.destination[i].location = assessLocale(e);
+                  load.destination[i].location = e;
                 }
               "
             />
@@ -315,112 +315,66 @@ export default {
   },
 
   components: {
-    // Address,
+    Address,
     AutoComplete,
     Date,
     Time,
   },
   methods: {
-    assessLocale(place) {
-      let address_comp = {};
-      for (const component of place.address_components) {
-        const componentType = component.types[0];
-
-        switch (componentType) {
-          case "street_number": {
-            address_comp.streetnumber = component.long_name;
-            break;
-          }
-
-          case "route": {
-            address_comp.street = component.long_name;
-            break;
-          }
-
-          case "postal_code": {
-            address_comp.postcode = component.long_name;
-            break;
-          }
-
-          case "postal_code_suffix": {
-            address_comp.postcode_suffix = component.long_name;
-            break;
-          }
-          case "locality":
-            address_comp.city = component.long_name;
-            break;
-
-          case "administrative_area_level_1": {
-            address_comp.state = component.short_name;
-            break;
-          }
-          case "country":
-            address_comp.country = component.long_name;
-            break;
-        }
-      }
-      console.log(address_comp);
-      console.log("load origin", this.load.origin);
-      console.log("load destination", this.load.destination);
-
-      place.address_components = address_comp;
-      return place;
-    },
     async saveRoute() {
       console.log(this.load);
       let coords = [];
-      this.load.origin.map((x) => coords.push([x.lng, x.lat]));
-      this.load.destination.map((x) => coords.push([x.lng, x.lat]));
-
+      this.load.origin.map(
+        (x) => (console.log(x), coords.push([x.location.lng, x.location.lat]))
+      );
+      this.load.destination.map(
+        (x) => (console.log(x), coords.push([x.location.lng, x.location.lat]))
+      );
+      console.log(coords);
       try {
-        this.load.origin.location[0].lat &&
-        this.load.destination.location[0].lat
-          ? await axios
-              .post(
-                `https://api.openrouteservice.org/v2/directions/driving-hgv/geojson`,
-                {
-                  coordinates: coords,
-                  continue_straight: "true",
-                  extra_info: [
-                    "suitability",
-                    "steepness",
-                    "surface",
-                    "waycategory",
-                    "waytype",
-                    "tollways",
-                    "traildifficulty",
-                    "osmid",
-                    "roadaccessrestrictions",
-                    "countryinfo",
-                    "green",
-                    "noise",
-                  ],
-                  instructions: "true",
-                  instructions_format: "text",
-                  options: { vehicle_type: "hgv" },
-                  preference: "recommended",
-                  roundabout_exits: "false",
-                  suppress_warnings: "true",
-                  units: "mi",
-                  geometry: "true",
-                }
-              )
-              .then((res) => {
-                console.log(res);
-                res.data.features[0].geometry.coordinates = H.encode({
-                  polyline: res.data.features[0].geometry.coordinates,
-                });
-                console.log(res);
-                this.load.route = res.data.features[0];
+        await axios
+          .post(
+            `https://api.openrouteservice.org/v2/directions/driving-hgv/geojson`,
+            {
+              coordinates: coords,
+              extra_info: [
+                "suitability",
+                "steepness",
+                "surface",
+                "waycategory",
+                "waytype",
+                "tollways",
+                "traildifficulty",
+                "osmid",
+                "roadaccessrestrictions",
+                "countryinfo",
+                "green",
+                "noise",
+              ],
+              instructions: true,
+              instructions_format: "text",
+              options: { vehicle_type: "hgv" },
+              preference: "recommended",
+              roundabout_exits: false,
+              suppress_warnings: true,
+              units: "mi",
+              geometry: true,
+            }
+          )
+          .then((res) => {
+            console.log(res);
+            res.data.features[0].geometry.coordinates = H.encode({
+              polyline: res.data.features[0].geometry.coordinates,
+            });
+            console.log(res);
+            this.load.route = res.data.features[0];
 
-                this.load.createdAt = Date.now();
-              })
-          : console.error("Destination and origin must be different");
+            this.load.createdAt = Date.now();
+          });
       } catch (error) {
         console.log(error);
       } finally {
         this.l1++;
-        this.loadSubmit();
       }
     },
 
@@ -434,12 +388,6 @@ export default {
         time: null,
         ref: "",
       });
-    },
-    deleteOriginLocation(i) {
-      this.load.origin.splice(i, 1);
-    },
-    deleteDestinationLocation(i) {
-      this.load.destination.splice(i, 1);
     },
     loadSubmit() {
       try {

@@ -1,31 +1,37 @@
 <template>
-      <v-row>
-        <v-col v-for="n in drivers" :key="n" cols="4">
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card color="primary" class="red--text">
-                <v-container fluid grid-list-lg>
-                  <v-layout row>
-                    <v-flex xs7>
-                      <div>
-                        <div class="headline">headline</div>
-                        <div>description</div>
-                      </div>
-                    </v-flex>
-                    <v-flex xs5>
-                      <v-card-media
-                        src="description"
-                        height="125px"
-                        contain
-                      ></v-card-media>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-col>
-      </v-row>
+  <v-row d-flex align-content-space-around class="mx-auto">
+    <v-col>
+      <v-card>
+        <v-card-title>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="drivers"
+          :search="search"
+          @click:row="handleClick"
+        >
+          <template v-slot:no-data>
+            <v-card-title primary-title>
+              No Drivers!
+            </v-card-title>
+          </template>
+
+          <template v-slot:no-results>
+            <v-card-title primary-title>
+              No Matching Drivers!
+            </v-card-title>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -34,6 +40,7 @@ export default {
   data() {
     return {
       drivers: [],
+      headers: {},
     };
   },
   created() {
@@ -52,6 +59,7 @@ export default {
             querySnapshot.forEach((doc) => {
               this.drivers.push(doc.data());
             });
+            console.log(this.drivers);
           });
       } catch (error) {
         console.log(error);
