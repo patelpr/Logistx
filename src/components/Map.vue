@@ -6,24 +6,22 @@
 
     <v-map
       ref="myMap"
-      v-else
+      v-if="origin && destination && load"
       :bounds="[
-        [
-          selectedLoad.origin.location.latitude,
-          selectedLoad.origin.location.longitude,
-        ],
-        [
-          selectedLoad.destination.location.latitude,
-          selectedLoad.destination.location.longitude,
-        ],
+        [load.origin[0].location.lat, load.origin[0].location.lng],
+        [load.destination[0].location.lat, load.destination[0].location.lng],
       ]"
-      style="height: 100vh; z-index:0;"
+      style="height: 100vh; z-index: 0"
     >
-      <v-tilelayer :url="url" :attribution="attribution"> </v-tilelayer>
+      <v-tilelayer
+        url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+        :attribution="attribution"
+      >
+      </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>
       <v-marker :lat-lng="destination"></v-marker>
 
-      <l-polyline :latLngs="poly.geometry.coordinates" lineCap lineJoin>
+      <l-polyline :lat-lngs="poly.geometry.coordinates" lineCap lineJoin>
       </l-polyline>
     </v-map>
   </div>
@@ -38,28 +36,25 @@ export default {
     "v-map": LMap,
     "v-tilelayer": LTileLayer,
     "v-marker": LMarker,
-    LPolyline,
+    "l-polyline": LPolyline,
   },
   props: {
     load: { type: Object },
-    drivers: { type: Array },
   },
   watch: {
-    load: function(x) {
-      this.selectedLoad = x;
-      this.origin = [
-        this.selectedLoad.origin.location.latitude,
-        this.selectedLoad.origin.location.longitude,
-      ];
+    load: function (x) {
+      this.origin = [x.origin[0].location.lat, x.origin[0].location.lng];
       this.destination = [
-        this.selectedLoad.destination.location.latitude,
-        this.selectedLoad.destination.location.longitude,
+        x.destination[0].location.lat,
+        x.destination[0].location.lng,
       ];
-      this.poly = this.decode(this.selectedLoad.route.geometry);
+      this.poly = this.decode(x.route.geometry.coordinates);
+      this.selectedLoad = x;
     },
   },
   mounted() {
     this.selectedLoad = this.load;
+    this.load = this.selectedLoad;
   },
   methods: {
     decode(str) {
@@ -80,8 +75,6 @@ export default {
       poly: null,
       origin: null,
       destination: null,
-
-      url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>',
     };

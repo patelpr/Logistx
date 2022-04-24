@@ -4,11 +4,11 @@
     <v-col cols="2"
       ><v-navigation-drawer right width="16.6vw">
         <v-card v-if="selectedLoad" elevation="0">
-          <Address :load="selectedLoad.origin" title="Pickup" />
-          <Address :load="selectedLoad.destination" title="Delivery" />
+          <!-- <Address :load="selectedLoad.origin[0]" title="Pickup" /> -->
+          <!-- <Address :load="selectedLoad.destination[0]" title="Delivery" /> -->
 
           <div class="headline">
-            {{ (selectedLoad.route.summary.distance / 1609).toFixed(2) }}
+            {{ (selectedLoad.route.summary.distance).toFixed(2) }}
             miles
           </div>
           <span>{{ setTime() }} </span>
@@ -50,10 +50,10 @@
             <v-row no-gutters>
               <v-col cols="5">
                 <v-list-item-title>{{
-                  load.origin.location.address_components.city
+                  load.origin[0].location.address_components.city
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  load.origin.location.address_components.state
+                  load.origin[0].location.address_components.state
                 }}</v-list-item-subtitle>
               </v-col>
               <v-col cols="2">
@@ -62,10 +62,10 @@
 
               <v-col cols="5">
                 <v-list-item-title>{{
-                  load.destination.location.address_components.city
+                  load.destination[0].location.address_components.city
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  load.destination.location.address_components.state
+                  load.destination[0].location.address_components.state
                 }}</v-list-item-subtitle>
               </v-col>
             </v-row>
@@ -79,19 +79,18 @@
 <script>
 import firebase from "firebase";
 import Map from "../Map.vue";
-import Address from "../Global/Address.vue";
+// import Address from "../Global/Address.vue";
 export default {
   components: {
     Map,
-    Address,
+    // Address,
   },
   created() {
     this.getLoads();
-    console.log(firebase.auth().currentUser.uid);
   },
   methods: {
     link() {
-      return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`;
+      return `https://www.google.com/maps/dir/${this.selectedLoad.origin[0].location.formatted_address}/${this.selectedLoad.destination[0].location.formatted_address}/`;
     },
     setTime() {
       let d = Number(this.selectedLoad.route.summary.duration);
@@ -110,11 +109,10 @@ export default {
         await firebase
           .firestore()
           .collection("users")
-          .doc(firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid))
+          .doc(firebase.auth().currentUser.uid)
           .collection("loads")
           .where("active", "==", true)
           .onSnapshot((querySnapshot) => {
-            console.log(querySnapshot);
             querySnapshot.forEach((doc) => {
               this.loads.push(doc.data());
             });

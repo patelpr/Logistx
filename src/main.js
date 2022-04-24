@@ -7,29 +7,7 @@ import { VueMaskDirective } from "v-mask";
 import * as Vue2Leaflet from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-// import VueGapi from "vue-gapi";
 
-// const oldconfig = {
-//   clientId:
-//     "707547149273-d365i9o81bal8m662k36otf145do6kfg.apps.googleusercontent.com",
-//   scopes: [
-//     "email",
-//     "profile",
-//     "https://www.googleapis.com/auth/drive",
-//     "https://www.googleapis.com/auth/contacts",
-//     "https://mail.google.com/",
-//     "https://www.googleapis.com/auth/tasks",
-//     "https://www.googleapis.com/auth/calendar",
-//   ],
-//   discoveryDocs: [
-//     "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
-//     "https://tasks.googleapis.com/$discovery/rest?version=v1",
-//     "https://people.googleapis.com/$discovery/rest?version=v1",
-//     "https://gmail.googleapis.com/$discovery/rest?version=v1",
-//     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-//   ],
-// };
-// firebase.initializeApp(config);
 
 var firebaseConfig = {
   apiKey: "AIzaSyASOQIUVCneyQLGqN7Nc0AgqkxOsflMcfA",

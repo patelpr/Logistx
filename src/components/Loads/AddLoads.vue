@@ -281,7 +281,6 @@ export default {
       reRender: 0,
 
       load: {
-        num: null,
         weight: null,
         rate: null,
         tracking: false,
@@ -331,46 +330,50 @@ export default {
         (x) => (console.log(x), coords.push([x.location.lng, x.location.lat]))
       );
       console.log(coords);
-      try {
-        await axios
-          .post(
-            `https://api.openrouteservice.org/v2/directions/driving-hgv/geojson`,
-            {
-              coordinates: coords,
-              extra_info: [
-                "suitability",
-                "steepness",
-                "surface",
-                "waycategory",
-                "waytype",
-                "tollways",
-                "traildifficulty",
-                "osmid",
-                "roadaccessrestrictions",
-                "countryinfo",
-                "green",
-                "noise",
-              ],
-              instructions: true,
-              instructions_format: "text",
-              options: { vehicle_type: "hgv" },
-              preference: "recommended",
-              roundabout_exits: false,
-              suppress_warnings: true,
-              units: "mi",
-              geometry: true,
-            }
-          )
-          .then((res) => {
-            console.log(res);
-            res.data.features[0].geometry.coordinates = H.encode({
-              polyline: res.data.features[0].geometry.coordinates,
-            });
-            console.log(res);
-            this.load.route = res.data.features[0];
 
-            this.load.createdAt = Date.now();
+      try {
+        await axios({
+          method: "post",
+          headers: {
+            Authorization:
+              "5b3ce3597851110001cf624841462741459b4d1d93962280efd335b8",
+          },
+          url: `https://api.openrouteservice.org/v2/directions/driving-hgv/geojson`,
+          data: {
+            coordinates: coords,
+            extra_info: [
+              "suitability",
+              "steepness",
+              "surface",
+              "waycategory",
+              "waytype",
+              "tollways",
+              "traildifficulty",
+              "osmid",
+              "roadaccessrestrictions",
+              "countryinfo",
+              "green",
+              "noise",
+            ],
+            instructions: true,
+            instructions_format: "text",
+            preference: "recommended",
+            roundabout_exits: false,
+            suppress_warnings: true,
+            units: "mi",
+            geometry: true,
+          },
+        }).then((res) => {
+          let resData = res.data.features[0];
+
+          res.data.features[0].geometry.coordinates = H.encode({
+            polyline: res.data.features[0].geometry.coordinates,
           });
+          resData.summary = resData.properties.summary;
+          delete resData.properties;
+          delete resData.type;
+          this.load.route = resData;
+        });
       } catch (error) {
         console.log(error);
       } finally {
@@ -398,7 +401,7 @@ export default {
           .collection("loads")
           .doc();
         this.load.id = docRef.id;
-        docRef.set(this.load);
+        docRef.set(JSON.parse(JSON.stringify(this.load)));
       } catch (error) {
         console.log(error);
       } finally {
