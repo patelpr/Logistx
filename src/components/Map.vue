@@ -1,16 +1,12 @@
 <template>
   <div id="theMap">
-    <v-row v-if="!selectedLoad" justify="space-around" class="ma-4">
-      <h1>Select A Load To View the Map</h1>
-    </v-row>
-
     <v-map
       ref="myMap"
       v-if="origin && destination && load"
       :bounds="[
         [load.origin[0].location.lat, load.origin[0].location.lng],
         [load.destination[0].location.lat, load.destination[0].location.lng],
-      ]"
+      ]||[[38.6185221,-92.7914713],[33.889239,-84.226134]]"
       style="height: 100vh; z-index: 0"
     >
       <v-tilelayer
@@ -23,6 +19,18 @@
 
       <l-polyline :lat-lngs="poly.geometry.coordinates" lineCap lineJoin>
       </l-polyline>
+    </v-map>
+    <v-map
+      ref="myMap"
+      v-else
+      :bounds="[[47.6185221,-100.7914713],[30.889239,-97.526134]]"
+      style="height: 100vh; z-index: 0"
+    >
+      <v-tilelayer
+        url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+        :attribution="attribution"
+      >
+      </v-tilelayer>
     </v-map>
   </div>
 </template>
@@ -48,6 +56,7 @@ export default {
         x.destination[0].location.lat,
         x.destination[0].location.lng,
       ];
+      console.log(this.origin,this.destination)
       this.poly = this.decode(x.route.geometry.coordinates);
       this.selectedLoad = x;
     },
