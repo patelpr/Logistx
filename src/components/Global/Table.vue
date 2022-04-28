@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     handleClick: (equip) => {
-      console.log(equip);
+      
       this.$router.push({
         name: "Equipment",
         params: { id: equip.equipment_id, equipment: equip },

@@ -4,8 +4,8 @@
     <v-col cols="2"
       ><v-navigation-drawer right width="16.6vw">
         <v-card v-if="selectedLoad" elevation="0">
-          <!-- <Address :load="selectedLoad.origin[0]" title="Pickup" /> -->
-          <!-- <Address :load="selectedLoad.destination[0]" title="Delivery" /> -->
+          <!-- <Address :load="selectedLoad.origin" title="Pickup" /> -->
+          <!-- <Address :load="selectedLoad.destination" title="Delivery" /> -->
 
           <div class="headline">
             {{ (selectedLoad.route.summary.distance).toFixed(2) }}
@@ -50,10 +50,10 @@
             <v-row no-gutters>
               <v-col cols="5">
                 <v-list-item-title>{{
-                  load.origin[0].location.address_components.city
+                  load.origin.location.address_components.city
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  load.origin[0].location.address_components.state
+                  load.origin.location.address_components.state
                 }}</v-list-item-subtitle>
               </v-col>
               <v-col cols="2">
@@ -62,10 +62,10 @@
 
               <v-col cols="5">
                 <v-list-item-title>{{
-                  load.destination[0].location.address_components.city
+                  load.destination.location.address_components.city
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  load.destination[0].location.address_components.state
+                  load.destination.location.address_components.state
                 }}</v-list-item-subtitle>
               </v-col>
             </v-row>
@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     link() {
-      return `https://www.google.com/maps/dir/${this.selectedLoad.origin[0].location.formatted_address}/${this.selectedLoad.destination[0].location.formatted_address}/`;
+      return `https://www.google.com/maps/dir/${this.selectedLoad.origin.location.formatted_address}/${this.selectedLoad.destination.location.formatted_address}/`;
     },
     setTime() {
       let d = Number(this.selectedLoad.route.summary.duration);
@@ -120,6 +120,7 @@ export default {
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
+      
     },
     archiveLoad(id) {
       try {
@@ -131,7 +132,7 @@ export default {
           .doc(id)
           .update({ active: false });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     selectLoad(load) {

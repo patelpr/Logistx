@@ -18,15 +18,11 @@
           @click:row="handleClick"
         >
           <template v-slot:no-data>
-            <v-card-title primary-title>
-              No Drivers!
-            </v-card-title>
+            <v-card-title primary-title> No Drivers! </v-card-title>
           </template>
 
           <template v-slot:no-results>
-            <v-card-title primary-title>
-              No Matching Drivers!
-            </v-card-title>
+            <v-card-title primary-title> No Matching Drivers! </v-card-title>
           </template>
         </v-data-table>
       </v-card>
@@ -40,29 +36,45 @@ export default {
   data() {
     return {
       drivers: [],
-      headers: {},
+      search: "",
+      headers: [
+        {
+          text: "Driver Id",
+          align: "start",
+          value: "licenseNum",
+        },
+        { text: "First Name", value: "firstName" },
+        { text: "Last Name", value: "lastName" },
+        { text: "Phone", value: "phone" },
+        { text: "State", value: "licenseState" },
+      ],
     };
   },
   created() {
     this.getDrivers();
   },
   methods: {
+    handleClick: (equip) => {
+      
+      this.$router.push({
+        name: "Driver",
+        params: { id: equip.equipment_id, equipment: equip },
+      });
+    },
     async getDrivers() {
       try {
         await firebase
           .firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
           .collection("drivers")
-          .where("active", "==", true)
+          .where("carrier", "==", firebase.auth().currentUser.uid)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.drivers.push(doc.data());
             });
-            console.log(this.drivers);
+            
           });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   },

@@ -345,12 +345,12 @@ export default {
         reason: null,
       };
       this.driver.work.history.push(add);
-      console.log(this.driver.work.history);
+      
     },
     setPlace(e, p, i) {
       this.driver.address.format = p.formatted_address;
       this.driver.address.comp = e;
-      //   console.log(this.driver.address);
+      //   
     },
     submit() {
       try {
@@ -359,7 +359,7 @@ export default {
           .collection("drivers")
           .add(this.driver);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     clear() {

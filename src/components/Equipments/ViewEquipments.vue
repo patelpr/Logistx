@@ -17,18 +17,12 @@
           :search="search"
           @click:row="handleClick"
         >
-    
-
           <template v-slot:no-data>
-            <v-card-title primary-title>
-              No Matching Equipment!
-            </v-card-title>
+            <v-card-title primary-title> No Matching Equipment! </v-card-title>
           </template>
 
           <template v-slot:no-results>
-            <v-card-title primary-title>
-              No Matching Equipment!
-            </v-card-title>
+            <v-card-title primary-title> No Matching Equipment! </v-card-title>
           </template>
         </v-data-table>
       </v-card>
@@ -46,7 +40,9 @@ export default {
     handleClick: (equip) => {
       this.$router.push({
         name: "Equipment",
-        params: { id: equip.equipment_id, equipment: equip },
+        params: {
+          equipment: equip,
+        },
       });
     },
     async getEquipments() {
@@ -59,9 +55,9 @@ export default {
           .collection("equipments");
 
         await docRef.onSnapshot((querySnapshot) => {
-          // console.log(querySnapshot);
+          // 
           querySnapshot.forEach((doc) => {
-            console.log(doc.data());
+            
             this.equipments.push(doc.data());
           });
         });
@@ -79,7 +75,7 @@ export default {
           .doc(id)
           .update({ active: false });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   },

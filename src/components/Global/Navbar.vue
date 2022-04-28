@@ -11,16 +11,13 @@
     left
   >
     <v-list nav>
-      <router-link :to="{ name: 'Account' }">
-        <v-avatar
-          class="d-block text-center mx-auto mt-4"
-          color="white darken-1"
-          size="36"
-        >
-          <img v-if="false" />
-          <span v-else class="black--text text-h5">PP</span></v-avatar
-        >
-      </router-link>
+      <v-avatar
+        class="d-block text-center mx-auto mt-4"
+        color="white darken-1"
+        size="36"
+      >
+        <img v-if="user" :src="user.photoURL" />
+      </v-avatar>
 
       <v-divider class="mx-3 my-5"></v-divider>
 
@@ -43,11 +40,18 @@ import firebase from "firebase";
 
 export default {
   data: () => ({
+    user: null,
     links: [
       {
         name: "Equipments",
         icon: "mdi-truck-outline",
         url: "/equipments",
+      },
+
+      {
+        name: "Add Equipments",
+        icon: "mdi-plus",
+        url: "/equipments/add",
       },
       {
         name: "Loads",
@@ -55,14 +59,30 @@ export default {
         url: "/loads",
       },
       {
+        name: "Add Loads",
+        icon: "mdi-plus",
+        url: "/loads/add",
+      },
+      {
         name: "Drivers",
-        icon: "mdi-steering",
+        icon: "mdi-map",
         url: "/drivers",
+      },
+      {
+        name: "Add Drivers",
+        icon: "mdi-plus",
+        url: "/drivers/add",
       },
     ],
   }),
   components: {
     Login,
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.user = user;
+      console.log(this.user);
+    });
   },
 };
 </script>

@@ -135,7 +135,7 @@ export default {
           )
           .then((res) => {
             let obj = {};
-            console.log(res.data.Results);
+            
 
             res.data.Results.filter(
               (x) =>
@@ -147,7 +147,7 @@ export default {
             this.e1++;
           });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     async equipmentSubmit() {
@@ -157,14 +157,14 @@ export default {
         .doc(firebase.auth().currentUser.uid)
         .collection("equipments")
         .doc();
-      console.log(docRef);
+      
       try {
-        console.log(docRef);
+        
         this.equipment.equipment_id = docRef.id;
-        console.log(this.equipment);
+        
         await docRef.set(this.equipment);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         this.$router.push({ path: "/equipments" });
 

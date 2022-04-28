@@ -3,7 +3,7 @@
     <v-toolbar flat color="primary" dark>
       <v-toolbar-title
         >LOAD
-        {{ selectedLoad.createdAt || "No Load Selected" }}</v-toolbar-title
+        {{ selectedLoad.id || "No Load Selected" }}</v-toolbar-title
       >
       <v-spacer></v-spacer>
       <v-btn text icon @click="archiveLoad(selectedLoad.id)"
@@ -89,7 +89,7 @@ export default {
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
-      console.log();
+      
     },
   },
 };

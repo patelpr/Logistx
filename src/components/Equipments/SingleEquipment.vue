@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     async updateEquipments() {
-      console.log(this.selectedEquipment);
+      
       try {
         await firebase
           .firestore()
@@ -175,7 +175,7 @@ export default {
           .collection("equipments")
           .doc(this.id)
           .update(this.selectedEquipment);
-        console.log(this.selectedEquipment);
+        
       } catch (error) {
         console.error("Error updating documents: ", error);
       }

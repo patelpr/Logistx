@@ -74,14 +74,13 @@ export default {
             break;
         }
       }
-      console.log(address_comp);
+
       place.address_components = address_comp;
       return place;
     },
   },
   watch: {
     autocompleteLocationModel(newVal) {
-      console.log(newVal.id);
       let resplace = new google.maps.places.PlacesService(
         document.getElementById("decoy") // named decoy because you can place on any old div, useless but required to access places Services
       );
@@ -108,7 +107,7 @@ export default {
           x.lat = x.geometry.location.lat();
           x.lng = x.geometry.location.lng();
           x = this.assessLocale(x);
-          console.log("place", x);
+
           this.$emit("place", x);
         }
       );
@@ -122,12 +121,12 @@ export default {
 
       // Call the method from the previous section here
       GetSuggestions(newVal)
-        .then(function(res) {
+        .then(function (res) {
           _vue.locationEntries = res;
         })
-        .catch(function(err) {
+        .catch(function (err) {
           // error handling goes here
-          console.log(err);
+          console.error(err);
         });
     },
   },

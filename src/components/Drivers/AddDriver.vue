@@ -211,7 +211,7 @@ export default {
         driversGlobalId = driver.id;
         await driver.set(this.driver);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       try {
@@ -223,7 +223,7 @@ export default {
           .doc(driversGlobalId);
         await driDoc.set(this.driver);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   },

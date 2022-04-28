@@ -1,5 +1,5 @@
 <template>
-  <div>Driver View</div>
+  <div></div>
 </template>
 
 <script>

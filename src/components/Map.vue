@@ -3,10 +3,15 @@
     <v-map
       ref="myMap"
       v-if="origin && destination && load"
-      :bounds="[
-        [load.origin[0].location.lat, load.origin[0].location.lng],
-        [load.destination[0].location.lat, load.destination[0].location.lng],
-      ]||[[38.6185221,-92.7914713],[33.889239,-84.226134]]"
+      :bounds="
+        [
+          [load.route.bbox[1], load.route.bbox[0]],
+          [load.route.bbox[3], load.route.bbox[2]],
+        ] || [
+          [38.6185221, -92.7914713],
+          [33.889239, -84.226134],
+        ]
+      "
       style="height: 100vh; z-index: 0"
     >
       <v-tilelayer
@@ -23,7 +28,10 @@
     <v-map
       ref="myMap"
       v-else
-      :bounds="[[47.6185221,-100.7914713],[30.889239,-97.526134]]"
+      :bounds="[
+        [47.6185221, -100.7914713],
+        [30.889239, -97.526134],
+      ]"
       style="height: 100vh; z-index: 0"
     >
       <v-tilelayer
@@ -51,12 +59,12 @@ export default {
   },
   watch: {
     load: function (x) {
-      this.origin = [x.origin[0].location.lat, x.origin[0].location.lng];
+      this.origin = [x.origin.location.lat, x.origin.location.lng];
       this.destination = [
-        x.destination[0].location.lat,
-        x.destination[0].location.lng,
+        x.destination.location.lat,
+        x.destination.location.lng,
       ];
-      console.log(this.origin,this.destination)
+      
       this.poly = this.decode(x.route.geometry.coordinates);
       this.selectedLoad = x;
     },

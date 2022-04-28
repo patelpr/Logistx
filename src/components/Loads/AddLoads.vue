@@ -18,23 +18,22 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card
-          class="mb-5 pa-5"
-          elevation="0"
-          v-for="(origin, i) in load.origin"
-          :key="i"
-        >
+        <v-card class="mb-5 pa-5" elevation="0">
+          <!-- Multi-stop
+        v-for="(origin, i) in load.origin"
+          :key="i" -->
           <v-row class="mb-4">
-            <div class="text-h6">Pick Up Information #{{ i + 1 }}</div>
+            <div class="text-h6">Pick Up Information</div>
+            <!-- Multi-stop 
             <v-btn icon color="red" @click="load.origin.splice(i, 1)">
               <v-icon>mdi-delete</v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-row>
           <v-row>
             <AutoComplete
               v-on:place="
                 (e) => {
-                  load.origin[i].location = e;
+                  load.origin.location = e;
                 }
               "
             />
@@ -44,7 +43,7 @@
               <Date
                 v-on:setdate="
                   (x) => {
-                    load.origin[i].date = x;
+                    load.origin.date = x;
                   }
                 "
               />
@@ -53,7 +52,7 @@
               <Time
                 v-on:settime="
                   (x) => {
-                    load.origin[i].time = x;
+                    load.origin.time = x;
                   }
                 "
               />
@@ -63,39 +62,40 @@
             <v-text-field
               name="PickupRef"
               label="Pick Up Reference"
-              v-model="load.origin[i].ref"
+              v-model="load.origin.ref"
               prepend-icon="mdi-pound"
               single-line
             ></v-text-field
           ></v-row>
         </v-card>
         <v-row>
-          <v-btn text icon color="primary" @click="addOrigins" width="100%">
+          <!-- 
+              Multi-stop
+              <v-btn text icon color="primary" @click="addOrigins" width="100%">
             <v-icon>mdi-plus</v-icon>Add More Locations
-          </v-btn>
+          </v-btn> -->
         </v-row>
 
         <v-btn color="primary" @click="l1 = 2"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card
-          class="mb-5 pa-5"
-          elevation="0"
-          v-for="(destination, i) in load.destination"
-          :key="i"
-        >
+        <v-card class="mb-5 pa-5" elevation="0">
+          <!--
+            Multi-stop 
+             v-for="(destination, i) in load.destination"
+          :key="i" -->
           <v-row class="mb-4">
-            <div class="text-h6">Delivery Information #{{ i + 1 }}</div>
-            <v-btn icon color="red" @click="load.destination.splice(i, 1)">
+            <div class="text-h6">Delivery Information</div>
+            <!-- Multi-stop  <v-btn icon color="red" @click="load.destination.splice(i, 1)">
               <v-icon>mdi-delete</v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-row>
           <v-row>
             <AutoComplete
               v-on:place="
                 (e) => {
-                  load.destination[i].location = e;
+                  load.destination.location = e;
                 }
               "
             />
@@ -105,7 +105,7 @@
               <Date
                 v-on:setdate="
                   (x) => {
-                    load.destination[i].date = x;
+                    load.destination.date = x;
                   }
                 "
               />
@@ -114,7 +114,7 @@
               <Time
                 v-on:settime="
                   (x) => {
-                    load.destination[i].time = x;
+                    load.destination.time = x;
                   }
                 "
               />
@@ -124,14 +124,14 @@
             <v-text-field
               name="PickupRef"
               label="Pick Up Reference"
-              v-model="load.destination[i].ref"
+              v-model="load.destination.ref"
               prepend-icon="mdi-pound"
               single-line
             ></v-text-field
           ></v-row>
         </v-card>
         <v-row>
-          <v-btn
+          <!-- <v-btn
             text
             icon
             color="primary"
@@ -139,7 +139,7 @@
             width="100%"
           >
             <v-icon>mdi-plus</v-icon>Add More Locations
-          </v-btn>
+          </v-btn> -->
         </v-row>
         <v-btn color="primary" @click="saveRoute()"> Continue </v-btn>
       </v-stepper-content>
@@ -149,7 +149,9 @@
           <v-row class="mb-4">
             <h3>Additional Load Details</h3>
           </v-row>
-
+          <v-row
+            ><AddSelectDriver v-on:setdriver="(e) => (load.driver = e)"
+          /></v-row>
           <v-row>
             <v-col cols="12" md="4">
               <v-text-field
@@ -237,16 +239,12 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <div v-for="(load, i) in load.origin" :key="i">
-                <Address :load="load" title="Pickup" />
-              </div>
+              <Address :load="load.origin" title="Pickup" />
 
               <v-btn class="ma-2" @click="l1 = 1">EDIT ORIGIN </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <div v-for="(load, i) in load.destination" :key="i">
-                <Address :load="load" title="Delivery" />
-              </div>
+              <Address :load="load.destination" title="Delivery" />
               <v-btn class="ma-2" @click="l1 = 2">EDIT DELIVERY</v-btn>
             </v-col>
           </v-row>
@@ -263,6 +261,7 @@ import Address from "../Global/Address.vue";
 import AutoComplete from "../Global/AutoComplete.vue";
 import Date from "../Global/Date.vue";
 import Time from "../Global/Time.vue";
+import AddSelectDriver from "../Global/AddSelectDriver.vue";
 import axios from "axios";
 import firebase from "firebase";
 import H from "../../assets/fastpolylines";
@@ -286,29 +285,32 @@ export default {
         tracking: false,
         active: true,
         equipment: {},
+        driver: "",
         route: {},
         contact: {
           name: "",
           email: "",
           number: null,
         },
-        origin: [
+        origin:
+          // [
           {
             location: {},
             date: null,
             time: null,
             ref: "",
           },
-        ],
+        // ],
 
-        destination: [
+        destination:
+          // [
           {
             location: {},
             time: null,
             date: null,
             ref: "",
           },
-        ],
+        // ],
       },
     };
   },
@@ -317,19 +319,26 @@ export default {
     Address,
     AutoComplete,
     Date,
+    AddSelectDriver,
     Time,
   },
   methods: {
     async saveRoute() {
-      console.log(this.load);
-      let coords = [];
-      this.load.origin.map(
-        (x) => (console.log(x), coords.push([x.location.lng, x.location.lat]))
-      );
-      this.load.destination.map(
-        (x) => (console.log(x), coords.push([x.location.lng, x.location.lat]))
-      );
-      console.log(coords);
+      
+      let coords = [
+        [this.load.origin.location.lng, this.load.origin.location.lat],
+        [
+          this.load.destination.location.lng,
+          this.load.destination.location.lat,
+        ],
+      ];
+      //   this.load.origin.map(
+      //     (x) => (
+      //   );
+      //   this.load.destination.map(
+      //     (x) => (
+      //   );
+      
 
       try {
         await axios({
@@ -375,23 +384,23 @@ export default {
           this.load.route = resData;
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         this.l1++;
       }
     },
 
-    addOrigins() {
-      this.load.origin.push({ location: {}, date: null, time: null, ref: "" });
-    },
-    addDestinations() {
-      this.load.destination.push({
-        location: {},
-        date: null,
-        time: null,
-        ref: "",
-      });
-    },
+    // addOrigins() {
+    //   this.load.origin.push({ location: {}, date: null, time: null, ref: "" });
+    // },
+    // addDestinations() {
+    //   this.load.destination.push({
+    //     location: {},
+    //     date: null,
+    //     time: null,
+    //     ref: "",
+    //   });
+    // },
     loadSubmit() {
       try {
         const docRef = firebase
@@ -403,7 +412,7 @@ export default {
         this.load.id = docRef.id;
         docRef.set(JSON.parse(JSON.stringify(this.load)));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         this.reRender++;
         this.$router.push("/loads");
@@ -412,18 +421,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.search-location {
-  padding: 12px 20px;
-  margin: 12px;
-  display: block;
-  font-size: 20px;
-  width: 100%;
-  font-weight: 400;
-  outline: blue;
-  height: 30px;
-  line-height: 30px;
-  border: darkslategrey 2px;
-}
-</style>

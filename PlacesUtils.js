@@ -12,7 +12,7 @@ const GetSuggestions = async searchText => {
       }
     })
   } catch (err) {
-    console.log('An error occurred', err)
+    console.error('An error occurred', err)
     result = null
   }
   return result
