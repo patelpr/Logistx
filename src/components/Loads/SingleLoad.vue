@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar flat color="primary" dark>
+    <v-toolbar flat color="teal">
       <v-toolbar-title
         >LOAD
         {{ selectedLoad.id || "No Load Selected" }}</v-toolbar-title

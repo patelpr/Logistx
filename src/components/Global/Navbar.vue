@@ -1,33 +1,37 @@
 <template>
-  <v-navigation-drawer
-    color="secondary"
-    dark
-    expand-on-hover
-    app
-    permanent
-    fixed
-    z-index="1"
-    bottom
-    left
-  >
+  <v-navigation-drawer app fixed z-index="1" >
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title class="text-h6"> Logistx </v-list-item-title>
+        <v-list-item-subtitle> Your Hub for Delivery service </v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-divider></v-divider>
     <v-list nav>
-      <v-avatar
-        class="d-block text-center mx-auto mt-4"
-        color="white darken-1"
-        size="36"
+      <v-list-group
+        v-for="item in items"
+        :key="item.title"
+        v-model="item.active"
+        :prepend-icon="item.action"
+        no-action
       >
-        <img v-if="user" :src="user.photoURL" />
-      </v-avatar>
+        <template v-slot:activator>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title"></v-list-item-title>
+          </v-list-item-content>
+        </template>
 
-      <v-divider class="mx-3 my-5"></v-divider>
-
-      <v-list-item v-for="link in links" :key="link.name" link :to="link.url">
-        <v-list-item-icon>
-          <v-icon>{{ link.icon }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ link.name }}</v-list-item-title>
-      </v-list-item>
-
+        <v-list-item
+          v-for="child in item.items"
+          :key="child.title"
+          :to="child.link"
+          active-class="white"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="child.title"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
       <v-divider class="mx-3 my-5"></v-divider>
       <Login />
     </v-list>
@@ -41,37 +45,39 @@ import firebase from "firebase";
 export default {
   data: () => ({
     user: null,
-    links: [
+    items: [
       {
-        name: "Equipments",
-        icon: "mdi-truck-outline",
-        url: "/equipments",
-      },
-
-      {
-        name: "Add Equipments",
-        icon: "mdi-plus",
-        url: "/equipments/add",
+        action: "mdi-account",
+        items: [
+          { link: "/", title: "Dashboard" },
+          { link: "/account", title: "Account" },
+        ],
+        title: "User",
       },
       {
-        name: "Loads",
-        icon: "mdi-map",
-        url: "/loads",
+        action: "mdi-truck-outline",
+        items: [
+          { link: "/equipments", title: "Equipment List" },
+          { link: "/add/equipments", title: "Add Equipment" },
+        ],
+        title: "Equipment",
       },
       {
-        name: "Add Loads",
-        icon: "mdi-plus",
-        url: "/loads/add",
+        action: "mdi-map",
+        active: true,
+        items: [
+          { link: "/loads", title: "Load Map" },
+          { link: "/add/loads", title: "Add Loads" },
+        ],
+        title: "Loads",
       },
       {
-        name: "Drivers",
-        icon: "mdi-map",
-        url: "/drivers",
-      },
-      {
-        name: "Add Drivers",
-        icon: "mdi-plus",
-        url: "/drivers/add",
+        action: "mdi-steering",
+        items: [
+          { link: "/drivers", title: "Drivers List" },
+          { link: "/add/drivers", title: "Add Driver" },
+        ],
+        title: "Drivers",
       },
     ],
   }),

@@ -1,19 +1,19 @@
 <template>
-  <v-stepper v-model="l1" non-linear :key="reRender" class="ma-2">
+  <v-stepper v-model="l1"  :key="reRender" class="ma-2">
     <v-stepper-header>
-      <v-stepper-step :complete="l1 > 1" step="1" editable>
+      <v-stepper-step color="teal" :complete="l1 > 1" step="1" editable>
         Origin
       </v-stepper-step>
 
       <v-divider></v-divider>
 
-      <v-stepper-step :complete="l1 > 2" step="2" editable>
+      <v-stepper-step color="teal" :complete="l1 > 2" step="2" editable>
         Destination
       </v-stepper-step>
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3" editable> Load Details </v-stepper-step>
+      <v-stepper-step  color="teal" step="3" editable> Load Details </v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -71,12 +71,12 @@
         <v-row>
           <!-- 
               Multi-stop
-              <v-btn text icon color="primary" @click="addOrigins" width="100%">
+              <v-btn text icon color="teal" @click="addOrigins" width="100%">
             <v-icon>mdi-plus</v-icon>Add More Locations
           </v-btn> -->
         </v-row>
 
-        <v-btn color="primary" @click="l1 = 2"> Continue </v-btn>
+        <v-btn color="teal" @click="l1 = 2" :disabled="load.origin.location"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
@@ -134,14 +134,14 @@
           <!-- <v-btn
             text
             icon
-            color="primary"
+            color="teal"
             @click="addDestinations"
             width="100%"
           >
             <v-icon>mdi-plus</v-icon>Add More Locations
           </v-btn> -->
         </v-row>
-        <v-btn color="primary" @click="saveRoute()"> Continue </v-btn>
+        <v-btn color="teal" @click="saveRoute()" :disabled="load.destination.location"> Continue </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -250,7 +250,7 @@
           </v-row>
         </v-card>
 
-        <v-btn color="primary" @click="loadSubmit()"> Book Load </v-btn>
+        <v-btn color="teal" @click="loadSubmit()" :disabled="load.origin.location && load.destination.location"> Book Load </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>

@@ -27,7 +27,7 @@
             ></v-text-field
           ></v-row>
         </v-card>
-        <v-btn color="primary" @click="VINcheck()"> Get Truck Details</v-btn>
+        <v-btn color="teal" @click="VINcheck()"> Get Truck Details</v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
@@ -102,7 +102,7 @@
         </v-card>
         <v-btn text @click="e1--, (equipment = {})"> Change </v-btn>
 
-        <v-btn color="primary" @click="equipmentSubmit()"> Save Truck </v-btn>
+        <v-btn color="teal" @click="equipmentSubmit()"> Save Truck </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>

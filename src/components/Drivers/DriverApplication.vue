@@ -133,7 +133,7 @@
             <v-row> </v-row>
           </v-card>
 
-          <v-btn color="primary" @click="e1 = 2">
+          <v-btn color="teal" @click="e1 = 2">
             Continue
           </v-btn>
         </v-stepper-content>
@@ -195,7 +195,7 @@
             </v-row>
           </v-card>
 
-          <v-btn color="primary" @click="e1 = 3">
+          <v-btn color="teal" @click="e1 = 3">
             Continue
           </v-btn>
         </v-stepper-content>
@@ -262,7 +262,7 @@
             >
           </v-card>
 
-          <v-btn color="primary" type="submit" @click="submit()">
+          <v-btn color="teal" type="submit" @click="submit()">
             Submit
           </v-btn>
 
@@ -376,7 +376,7 @@ export default {
   width: 60vw;
   font-size: 20px;
   font-weight: 400;
-  outline: blue;
+  outline:lightorange;
   height: 30px;
   line-height: 30px;
 }

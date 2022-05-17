@@ -1,45 +1,8 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="10"> <Map :load="selectedLoad"/></v-col>
-    <v-col cols="2"
-      ><v-navigation-drawer right width="16.6vw">
-        <v-card v-if="selectedLoad" elevation="0">
-          <!-- <Address :load="selectedLoad.origin" title="Pickup" /> -->
-          <!-- <Address :load="selectedLoad.destination" title="Delivery" /> -->
-
-          <div class="headline">
-            {{ (selectedLoad.route.summary.distance).toFixed(2) }}
-            miles
-          </div>
-          <span>{{ setTime() }} </span>
-
-          <v-card-actions>
-            <v-btn
-              icon
-              :to="{
-                name: 'Load',
-                params: { id: selectedLoad.id, load: selectedLoad },
-              }"
-              ><v-icon>mdi-pencil</v-icon></v-btn
-            >
-            <v-btn
-              text
-              icon
-              @click="archiveLoad(selectedLoad.id)"
-              color="primary"
-              ><v-icon>mdi-archive</v-icon></v-btn
-            >
-            <a target="_blank" :href="link()">
-              <v-btn text icon
-                ><v-icon>mdi-navigation-outline</v-icon></v-btn
-              ></a
-            >
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-        <v-card v-else class="pa-1">
-          <v-card-title>Select Load Below </v-card-title>
-        </v-card>
+    <v-col cols="10"> <Map :load="selectedLoad" /></v-col>
+    <v-col cols="2">
+      <v-navigation-drawer right width="16.6vw">
         <v-divider></v-divider>
         <v-list nav dense>
           <v-list-item
@@ -71,6 +34,35 @@
             </v-row>
           </v-list-item>
         </v-list>
+        <v-divider></v-divider>
+        <v-col>
+          <v-card v-if="selectedLoad" elevation="0">
+            <v-card-title class="headline">
+              {{ selectedLoad.route.summary.distance.toFixed(2) }}
+              miles
+            </v-card-title>
+            <v-card-subtitle>{{ setTime() }} </v-card-subtitle>
+
+            <v-card-actions>
+              <v-btn
+                icon
+                :to="{
+                  name: 'Load',
+                  params: { id: selectedLoad.id, load: selectedLoad },
+                }"
+                ><v-icon>mdi-pencil</v-icon></v-btn
+              >
+              <v-btn text icon @click="archiveLoad(selectedLoad.id)"
+                ><v-icon>mdi-archive</v-icon></v-btn
+              >
+              <a target="_blank" :href="link()">
+                <v-btn text icon
+                  ><v-icon>mdi-navigation-outline</v-icon></v-btn
+                ></a
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions> </v-card
+        ></v-col>
       </v-navigation-drawer>
     </v-col>
   </v-row>
@@ -120,7 +112,6 @@ export default {
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
-      
     },
     archiveLoad(id) {
       try {

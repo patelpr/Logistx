@@ -1,14 +1,12 @@
 <template>
-  <v-app>
+  <v-app >
     <Navbar />
-    <v-main>
+    <v-main >
       <v-container
-        fluid
-        ma-0
-        pa-0
         fill-height
-        style="background-color: lightgray"
-        ><v-row no-gutters align="start" justify="space-around">
+        app
+        style="background-color:teal"
+        ><v-row  justify="space-around">
           <router-view></router-view>
         </v-row>
       </v-container>

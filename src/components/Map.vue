@@ -3,11 +3,11 @@
     <v-map
       ref="myMap"
       v-if="origin && destination && load"
-      :bounds="
+      :bounds="load?
         [
           [load.route.bbox[1], load.route.bbox[0]],
           [load.route.bbox[3], load.route.bbox[2]],
-        ] || [
+        ] : [
           [38.6185221, -92.7914713],
           [33.889239, -84.226134],
         ]
@@ -21,7 +21,6 @@
       </v-tilelayer>
       <v-marker :lat-lng="origin"></v-marker>
       <v-marker :lat-lng="destination"></v-marker>
-
       <l-polyline :lat-lngs="poly.geometry.coordinates" lineCap lineJoin>
       </l-polyline>
     </v-map>

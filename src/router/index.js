@@ -29,7 +29,7 @@ let router = new Router({
 			component: () => import("../views/Login"),
 		},
 		{
-			path: "/loads/add",
+			path: "/add/loads",
 			name: "Add Loads",
 			component: () => import("../components/Loads/AddLoads"),
 			meta: {
@@ -37,14 +37,14 @@ let router = new Router({
 			},
 		},
 
-		{
-			path: "/loads/view",
-			name: "DriverLoad",
-			component: () => import("../components/Loads/AddLoads"),
-			meta: {
-				requiresAuth: true,
-			},
-		},
+		// {
+		// 	path: "/loads/view",
+		// 	name: "DriverLoad",
+		// 	component: () => import("../components/Loads/AddLoads"),
+		// 	meta: {
+		// 		requiresAuth: true,
+		// 	},
+		// },
 		{
 			path: "/loads/:id",
 			name: "Load",
@@ -113,7 +113,7 @@ let router = new Router({
 		},
 
 		{
-			path: "/equipments/add",
+			path: "/add/equipments",
 			name: "Add Equipments",
 			component: () => import("../components/Equipments/AddEquipment"),
 			meta: {

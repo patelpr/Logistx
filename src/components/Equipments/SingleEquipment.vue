@@ -4,7 +4,6 @@
       v-if="selectedEquipment"
       flat
       color="secondary"
-      dark
       class="mb-5"
     >
       <v-toolbar-title
@@ -88,13 +87,13 @@
       <v-tab-item>
         <v-card>
           <v-row class="ma-3">
-            <v-btn @click="dialog = true" icon color="primary">
+            <v-btn @click="dialog = true" icon color="teal">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-row>
           <v-layout row justify-center>
             <v-dialog v-model="dialog" persistent max-width="500px">
-              <v-btn color="primary" dark slot="activator">Open Dialog</v-btn>
+              <v-btn color="teal"  slot="activator">Open Dialog</v-btn>
               <v-card>
                 <v-card-title>
                   <span class="headline">User Profile</span>
